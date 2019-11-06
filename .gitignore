@@ -1,2 +1,5 @@
 # netbeans
 /nbproject/
+
+# config files
+/config/*

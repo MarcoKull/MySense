@@ -1,7 +1,11 @@
-from mysense.log.log_observer import LogObserver
+from log.log_observer import LogObserver
 
 class PrintLogger(LogObserver):
-    """Prints log messages with timestamps."""
+    """
+    Prints log messages with timestamps.
+    """
+    def __init__(self):
+        self.print_timestamp = False
 
     def log(self, timestamp, level, message):
         if level == 0:
@@ -17,4 +21,9 @@ class PrintLogger(LogObserver):
         else:
             l = "UNKNOWN!"
 
-        print("[" + timestamp + "] " + l + " " + message)
+        msg = l + " " + message
+
+        if self.print_timestamp:
+            msg = "[" + timestamp + "] " + msg
+
+        print(msg)

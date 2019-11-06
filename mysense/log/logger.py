@@ -5,7 +5,11 @@ from log.log_level import LogLevel
 import utime
 
 class Logger():
-    """docstring for Logger."""
+    """
+    This is a singleton class to log the application output.
+    It also acts as suject for which observers can be added to.
+    Creates a print logger by default on creation. 
+    """
 
     # implements singleton behaviour by
     # using a private class variable to use for new objects

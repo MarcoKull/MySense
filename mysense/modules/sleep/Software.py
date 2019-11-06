@@ -16,7 +16,7 @@ class Software(SleepModule):
         conf = ConfigFile(
             "config/sleep_software.conf",
             (
-                ("seconds", "3", "Specifies the input modules using space as seperator.", ConfigFile.VariableType.uint),
+                ("seconds", "3", "This module should only be used for testing.\n\nDefines how many seconds to sleep.", ConfigFile.VariableType.uint),
             )
         )
 

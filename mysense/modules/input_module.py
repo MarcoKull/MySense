@@ -14,5 +14,5 @@ class InputModule():
     def get_id(self):
         raise NotImplementedError("The get_id() method has to implemented by a InputModule child class.")
 
-    def decode(self, array):
+    def decode(array):
         raise NotImplementedError("The decode(array) method has to implemented by a InputModule child class.")

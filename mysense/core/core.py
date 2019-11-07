@@ -10,20 +10,34 @@ def __set_status(array, status):
     for s in array:
         s.set_status(status)
 
-def __module_load(type, name):
-    log_info("Loading " + type + " module '" + name + "'.")
-
+def __load_class(type, name):
+    log_debug("Loading " + type + " class '" + name + "'.")
     try:
         # this magic creates classes from knowing the type and class name only
-        return getattr(__import__('modules.' + type + "." + name,[], [], [name]), name)()
+        return getattr(__import__('modules.' + type + "." + name,[], [], [name]), name)
+
+    except Exception as e:
+        log_error("Could not load " + type + " class '" + name + "': " + str(e) + "." )
+
+def __load_module(type, name):
+    log_info("Loading " + type + " module '" + name + "'.")
+
+    # loading the class
+    klass = __load_class(type, name)
+    if klass == None:
+        return None
+
+    try:
+        # create a class instance
+        return klass()
 
     except Exception as e:
         log_error("Could not load " + type + " module '" + name + "': " + str(e) + "." )
 
-def __modules_load(conf, type):
+def __load_modules(conf, type):
     modules = []
     for i in str(conf.get(type)).split(" "):
-        m = __module_load(type, i)
+        m = __load_module(type, i)
         if m != None:
             modules.append(m)
     return modules
@@ -44,12 +58,12 @@ def run():
     )
 
     # load platform module
-    platform = __module_load("platform", conf.get("platform"))
+    platform = __load_module("platform", conf.get("platform"))
 
     # fallback to generic platform
     if platform == None:
         log_warning("Defaulting to generic platform.")
-        platform = __module_load("platform", "Generic")
+        platform = __load_module("platform", "Generic")
 
         # could not load any platform module. This is fatal.
         if platform == None:
@@ -57,7 +71,7 @@ def run():
 
 
     # load status modules
-    status = __modules_load(conf, "status")
+    status = __load_modules(conf, "status")
 
     # set status indicators to booting
     __set_status(status, StatusModule.StatusType.booting)
@@ -67,17 +81,17 @@ def run():
     #__set_status(status, StatusModule.StatusType.ota)
 
     # load input modules
-    input = __modules_load(conf, "input")
+    input = __load_modules(conf, "input")
     if len(input) == 0:
         log_warning("No input module loaded.")
 
     # load output modules
-    output = __modules_load(conf, "output")
+    output = __load_modules(conf, "output")
     if len(output) == 0:
         log_warning("No output module loaded.")
 
     # load sleep module
-    sleep = __module_load("sleep", conf.get("sleep"))
+    sleep = __load_module("sleep", conf.get("sleep"))
     if sleep == None:
         log_warning("No sleep module loaded.")
 

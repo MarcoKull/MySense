@@ -8,7 +8,7 @@ class Logger():
     """
     This is a singleton class to log the application output.
     It also acts as suject for which observers can be added to.
-    Creates a print logger by default on creation. 
+    Creates a print logger by default on creation.
     """
 
     # implements singleton behaviour by
@@ -21,7 +21,7 @@ class Logger():
 
             # create list of observers
             Logger.__instance.observers = [PrintLogger()]
-            Logger.__instance.lvl = LogLevel.debug
+            Logger.__instance.lvl = LogLevel.info
 
         return Logger.__instance
 

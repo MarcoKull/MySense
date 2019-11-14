@@ -1,7 +1,5 @@
 from modules.platform_module import PlatformModule
 
-import pycom
-
 class LoPy4(PlatformModule):
     """
     This class wrapps the generic LoPy4 features.
@@ -9,6 +7,7 @@ class LoPy4(PlatformModule):
     """
 
     def __init__(self):
+        import pycom
         # disable blue flashing of the led
         pycom.heartbeat(False)
 
@@ -18,3 +17,6 @@ class LoPy4(PlatformModule):
 
     def test(self):
         pass
+
+    def get_config_definition():
+        return None

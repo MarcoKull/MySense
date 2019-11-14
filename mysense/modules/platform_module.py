@@ -7,6 +7,7 @@ class PlatformModule(Module):
     """
 
     def __init__(self):
+        super(PlatformModule, self).__init__()
         pass
 
     def is_run_tests(self):

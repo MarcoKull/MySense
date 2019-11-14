@@ -1,15 +1,16 @@
 from modules.status_module import StatusModule
-from drivers.lopy4_led import LoPy4LED
 
-class LoPy4StatusLED(StatusModule):
+class StatusLED(StatusModule):
     """
     Status indicator using the built-in LoPy4 LED as status indicator.
     """
 
     def __init__(self):
+        from drivers.lopy4_led import LoPy4LED
         self.led = LoPy4LED()
 
     def set_status(self, type):
+        from drivers.lopy4_led import LoPy4LED
         if type == StatusModule.StatusType.error:
             self.led.set_color(LoPy4LED.Color.red)
 
@@ -33,3 +34,6 @@ class LoPy4StatusLED(StatusModule):
 
     def test(self):
         pass
+
+    def get_config_definition():
+        return None

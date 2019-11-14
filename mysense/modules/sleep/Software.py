@@ -11,17 +11,21 @@ class Software(SleepModule):
     """
 
     def __init__(self):
+        super(Software, self).__init__()
+        self.seconds = self.config().get("seconds")
 
-        # load config file
-        conf = ConfigFile(
-            "config/sleep_software.conf",
+    def get_config_definition():
+        return (
+            "sleep_software",
+            "This module uses the standart utime library to sleep.\nAs it does not use any power management functions it should only be used for testing.",
             (
-                ("seconds", "3", "This module should only be used for testing.\n\nDefines how many seconds to sleep.", ConfigFile.VariableType.uint),
+                ("seconds", "3", "Defines how many seconds to sleep.", ConfigFile.VariableType.uint),
             )
         )
-
-        self.seconds = conf.get("seconds")
 
     def sleep(self):
         log_info("Using software sleep to sleep " + str(self.seconds) + " seconds.")
         utime.sleep(self.seconds)
+
+    def test(self):
+        pass

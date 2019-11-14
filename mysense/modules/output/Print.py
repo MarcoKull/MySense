@@ -7,6 +7,7 @@ class Print(OutputModule):
     Example of an output module that prints the output to the log.
     """
     def __init__(self):
+        super(Print, self).__init__()
         self.level = LogLevel.debug
 
     def get_log_level(self):
@@ -25,3 +26,6 @@ class Print(OutputModule):
 
     def test(self):
         pass
+
+    def get_config_definition():
+        return None

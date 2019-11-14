@@ -14,3 +14,6 @@ class Generic(PlatformModule):
 
     def test(self):
         pass
+
+    def get_config_definition():
+        return None

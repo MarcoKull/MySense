@@ -1,4 +1,5 @@
 from modules.input_module import InputModule
+from core.config_file import ConfigFile
 
 import utime
 
@@ -8,9 +9,9 @@ class DateTime(InputModule):
     """
 
     def __init__(self):
-        pass
+        super(DateTime, self).__init__()
 
-    def get_id(self):
+    def get_id():
         return 0
 
     def get(self):
@@ -26,15 +27,18 @@ class DateTime(InputModule):
 
         return array
 
-    def decode(self, array):
+    def decode(array):
         s = "\t\"DateTime\":\n\t{\n"
         s += "\t\t\"year\": " + str(array[0] + 1970) + ",\n"
         s += "\t\t\"month\": " + str(array[1]) + ",\n"
         s += "\t\t\"day\": " + str(array[2]) + ",\n"
         s += "\t\t\"hour\": " + str(array[3]) + ",\n"
         s += "\t\t\"minute\": " + str(array[4]) + ",\n"
-        s += "\t\t\"second\": " + str(array[5]) + "\n\t}\n"
-        return (s)
+        s += "\t\t\"second\": " + str(array[5]) + "\n\t}"
+        return s
 
     def test(self):
         pass
+
+    def get_config_definition():
+        return None

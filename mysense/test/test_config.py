@@ -61,7 +61,7 @@ def test_config():
             # some micropython distributions don't implement uos.remove()
             pass
 
-    conf_create = ConfigFile(PATH_TESTCONFIG, conf_values)
+    conf_create = ConfigFile(PATH_TESTCONFIG, "This file is just for testing.", conf_values)
 
     # config file should have been created now
     if not file_exists(PATH_TESTCONFIG):
@@ -71,7 +71,7 @@ def test_config():
     test_config_step(conf_create, "create")
 
     # create loaded config file
-    conf_load = ConfigFile(PATH_TESTCONFIG, conf_values)
+    conf_load = ConfigFile(PATH_TESTCONFIG, "This file is just for testing.", conf_values)
 
     # run tests for loaded config
     test_config_step(conf_load, "load")

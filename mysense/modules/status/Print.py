@@ -7,6 +7,7 @@ class Print(StatusModule):
     A status indicator that prints the current state in the log.
     """
     def __init__(self):
+
         self.level = LogLevel.debug
 
     def get_log_level(self):
@@ -23,3 +24,6 @@ class Print(StatusModule):
 
     def test(self):
         pass
+
+    def get_config_definition():
+        return None

@@ -7,10 +7,7 @@ class SleepModule(Module):
     """
 
     def __init__(self):
-        pass
+        super(SleepModule, self).__init__()
 
     def sleep(self):
         raise NotImplementedError("The sleep() method has to implemented by a SleepModule child class.")
-
-    def test(self):
-        pass

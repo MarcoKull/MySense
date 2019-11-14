@@ -8,6 +8,7 @@ class ConfigFile():
 
         conf = ConfigFile(
             "mysense/resources/test.conf",
+            "This is an example for a description.",
             (
                 ("enabled", "true", "this is an example boolean\nsecond line", bool),
                 ("number", "42", "this is an example number", uint),
@@ -15,8 +16,9 @@ class ConfigFile():
             )
         )
     """
-    def __init__(self, path, values):
+    def __init__(self, path, description, values):
         self.path = path
+        self.description = description
 
         # create map with default values
         self.dict = {}
@@ -71,6 +73,10 @@ class ConfigFile():
             # try to create config file
             try:
                 f = open(path, "w")
+
+                for l in self.description.split("\n"):
+                    f.write("# " + l + "\n")
+                f.write("\n")
 
                 for v in values:
                     # write description as comment
@@ -227,6 +233,21 @@ class ConfigFile():
             except:
                 return None
 
+        # loglevel type
+        elif type == ConfigFile.VariableType.loglevel:
+            if value == "debug":
+                return LogLevel.debug
+            elif value == "info":
+                return LogLevel.info
+            elif value == "warning":
+                return LogLevel.warning
+            elif value == "error":
+                return LogLevel.error
+            elif value == "fatal":
+                return LogLevel.fatal
+            else:
+                return None
+
         return None
 
     def get(self, key):
@@ -242,3 +263,4 @@ class ConfigFile():
         bool = "bool"
         uint = "uint"
         string = "string"
+        loglevel = "loglevel"

@@ -9,7 +9,7 @@ class StatusLED(StatusModule):
         from drivers.lopy4_led import LoPy4LED
         self.led = LoPy4LED()
 
-    def set_status(self, type):
+    def status(self, type):
         from drivers.lopy4_led import LoPy4LED
         if type == StatusModule.StatusType.error:
             self.led.set_color(LoPy4LED.Color.red)
@@ -31,6 +31,12 @@ class StatusLED(StatusModule):
 
         if type == StatusModule.StatusType.sleeping:
             self.led.set_color(LoPy4LED.Color.purple)
+
+    def log(self, timestamp, level, message):
+        pass
+
+    def measurement(self, json):
+        pass
 
     def test(self):
         pass

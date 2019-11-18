@@ -20,40 +20,44 @@ class Core(Module):
         Logger().level = self.config().get("loglevel")
 
         # load status modules
-        self.__status = __load_modules(self.config(), "status")
+        self.__status = Core.__load_modules(self.config(), "status")
 
         # set status indicators to booting
         self.__set_status(StatusModule.StatusType.booting)
 
+        # add status modules as log observers
+        for s in self.__status:
+            Logger().add(s)
+
         # load platform module
-        self.__platform = __load_module("platform", self.config().get("platform"))
+        self.__platform = Core.__load_module("platform", self.config().get("platform"))
 
         # fallback to generic platform
         if self.__platform == None:
             log_warning("Defaulting to generic platform.")
-            self.__platform = __load_module("platform", "Generic")
+            self.__platform = Core.__load_module("platform", "Generic")
 
             # could not load any platform module. This is fatal.
             if self.__platform == None:
                 return
 
         # load input modules
-        self.__input = __load_modules(self.config(), "input")
+        self.__input = Core.__load_modules(self.config(), "input")
         if len(self.__input) == 0:
             log_warning("No input module loaded.")
 
         # load output modules
-        self.__output = __load_modules(self.config(), "output")
+        self.__output = Core.__load_modules(self.config(), "output")
         if len(self.__output) == 0:
             log_warning("No output module loaded.")
 
         # load sleep module
-        self.__sleep = __load_module("sleep", self.config().get("sleep"))
+        self.__sleep = Core.__load_module("sleep", self.config().get("sleep"))
 
         # fallback to generic platform
         if self.__sleep == None:
             log_warning("Defaulting to software sleep.")
-            self.__sleep = __load_module("sleep", "Software")
+            self.__sleep = Core.__load_module("sleep", "Software")
 
             # could not load any platform module. This is fatal.
             if self.__sleep == None:
@@ -154,9 +158,12 @@ class Core(Module):
                 log_debug("Decoding input with base64.")
                 base64 = "".join(map(chr, ubinascii.b2a_base64(binary))).rstrip()
 
+                # set outputs on status modules
+                for s in self.__status:
+                    s.measurement(json)
+
                 # send data
                 self.__set_status(StatusModule.StatusType.sending)
-
                 for o in self.__output:
                     log_debug("Sending to output module '" + o.__class__.__name__ + "'.")
                     o.send(binary, base64, json)
@@ -185,7 +192,7 @@ class Core(Module):
 
     def __set_status(self, status):
         for s in self.__status:
-            s.set_status(status)
+            s.status(status)
 
     def __list_modules(type):
         modules = []
@@ -216,7 +223,7 @@ class Core(Module):
                     continue
 
                 # load module class
-                klass = __load_class(i, j[0][:-3])
+                klass = Core.__load_class(i, j[0][:-3])
 
                 # skip unloadable classes
                 if klass == None:
@@ -232,33 +239,33 @@ class Core(Module):
                 # create configuration file
                 Module.create_config(cd)
 
-def __load_class(type, name):
-    log_debug("Loading " + type + " module class '" + name + "'.")
-    try:
-        # this magic creates classes from knowing the type and class name only
-        return getattr(__import__('modules.' + type + "." + name,[], [], [name]), name)
+    def __load_class(type, name):
+        log_debug("Loading " + type + " module class '" + name + "'.")
+        try:
+            # this magic creates classes from knowing the type and class name only
+            return getattr(__import__('modules.' + type + "." + name,[], [], [name]), name)
 
-    except Exception as e:
-        log_error("Could not load " + type + " module class '" + name + "': " + str(e) + "." )
+        except Exception as e:
+            log_error("Could not load " + type + " module class '" + name + "': " + str(e) + "." )
 
-def __load_module(type, name):
-    # loading the class
-    klass = __load_class(type, name)
-    if klass == None:
-        return None
+    def __load_module(type, name):
+        # loading the class
+        klass = Core.__load_class(type, name)
+        if klass == None:
+            return None
 
-    log_info("Loading " + type + " module '" + name + "'.")
-    try:
-        # create a class instance
-        return klass()
+        log_info("Loading " + type + " module '" + name + "'.")
+        try:
+            # create a class instance
+            return klass()
 
-    except Exception as e:
-        log_error("Could not load " + type + " module '" + name + "': " + str(e) + "." )
+        except Exception as e:
+            log_error("Could not load " + type + " module '" + name + "': " + str(e) + "." )
 
-def __load_modules(conf, type):
-    modules = []
-    for i in str(conf.get(type)).split(" "):
-        m = __load_module(type, i)
-        if m != None:
-            modules.append(m)
-    return modules
+    def __load_modules(conf, type):
+        modules = []
+        for i in str(conf.get(type)).split(" "):
+            m = Core.__load_module(type, i)
+            if m != None:
+                modules.append(m)
+        return modules

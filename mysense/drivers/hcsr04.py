@@ -26,7 +26,10 @@ class HCSR04():
         self.trigger(0)
 
         # wait for the rising edge of the echo then start timer
+        start = utime.ticks_us()
         while self.echo() == 0:
+            if utime.ticks_us() - start > 1000000:
+                raise Exception("Timeout starting HCSR04 distance sensor.")
             pass
         start = utime.ticks_us()
 

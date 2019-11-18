@@ -10,16 +10,8 @@ class DeepSleep(SleepModule):
     """
 
     def __init__(self):
-
-        # load config file
-        conf = ConfigFile(
-            "config/sleep_deepsleep.conf",
-            (
-                ("seconds", "3", "Defines how many seconds to sleep.", ConfigFile.VariableType.uint),
-            )
-        )
-
-        self.seconds = conf.get("seconds")
+        super(DeepSleep, self).__init__()
+        self.seconds = self.config().get("seconds")
 
     def sleep(self):
         log_info("Using deep sleep to sleep " + str(self.seconds) + " seconds.")
@@ -34,3 +26,6 @@ class DeepSleep(SleepModule):
                 ("seconds", "3", "Defines how many seconds to sleep.", ConfigFile.VariableType.uint),
             )
         )
+
+    def test(self):
+        pass

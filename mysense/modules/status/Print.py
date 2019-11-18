@@ -18,11 +18,17 @@ class Print(StatusModule):
 
     log_level = property(get_log_level, set_log_level)
 
-    def set_status(self, type):
+    def status(self, type):
         msg = "Switched to '" + str(type) + "' mode."
         Logger().log(self.level, msg)
 
+    def log(self, timestamp, level, message):
+        pass
+
     def test(self):
+        pass
+
+    def measurement(self, json):
         pass
 
     def get_config_definition():

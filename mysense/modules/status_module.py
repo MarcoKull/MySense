@@ -1,17 +1,20 @@
 from modules.module import Module
+from log.log_observer import LogObserver
 
-class StatusModule(Module):
+class StatusModule(Module, LogObserver):
     """
     Abstract class for status modules.
-    The set_status(type) method has to implemented by the child class.
+    The status(type) method has to implemented by the child class.
     """
 
     def __init__(self):
         pass
 
-    def set_status(self, type):
-        raise NotImplementedError("The set_status(type) method has to implemented by the child class.")
+    def status(self, type):
+        raise NotImplementedError("The status(type) method has to implemented by a StatusModule child class.")
 
+    def measurement(self, json):
+        raise NotImplementedError("The measurement(json) method has to implemented by a StatusModule child class.")
 
     class StatusType():
         error = "error"

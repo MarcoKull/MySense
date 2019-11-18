@@ -8,4 +8,4 @@ class LogObserver():
         pass
 
     def log(self, timestamp, level, message):
-        raise NotImplementedError("The log(timestamp, level, message) method has to implemented by the child class.")
+        raise NotImplementedError("The log(timestamp, level, message) method has to implemented by a LogObserver child class.")

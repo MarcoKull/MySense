@@ -1,6 +1,6 @@
-from modules.output_module import OutputModule
+from core.modules import OutputModule
 
-from log.log import *
+from core.log import *
 
 class Print(OutputModule):
     """

@@ -1,4 +1,4 @@
-from modules.platform_module import PlatformModule
+from core.modules import PlatformModule
 
 class Generic(PlatformModule):
     """

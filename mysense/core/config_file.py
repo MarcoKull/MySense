@@ -1,4 +1,4 @@
-from log.log import *
+from core.log import *
 
 class ConfigFile():
     """ Creates a configuration file with given path and key vaule pairs.
@@ -235,7 +235,9 @@ class ConfigFile():
 
         # loglevel type
         elif type == ConfigFile.VariableType.loglevel:
-            if value == "debug":
+            if value == "all":
+                return LogLevel.all
+            elif value == "debug":
                 return LogLevel.debug
             elif value == "info":
                 return LogLevel.info
@@ -247,6 +249,10 @@ class ConfigFile():
                 return LogLevel.fatal
             else:
                 return None
+
+        # path type
+        if type == ConfigFile.VariableType.path:
+            return value
 
         return None
 
@@ -264,3 +270,4 @@ class ConfigFile():
         uint = "uint"
         string = "string"
         loglevel = "loglevel"
+        path = "path"

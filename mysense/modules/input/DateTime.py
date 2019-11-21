@@ -1,4 +1,4 @@
-from modules.input_module import InputModule
+from core.modules import InputModule
 from core.config_file import ConfigFile
 
 import utime

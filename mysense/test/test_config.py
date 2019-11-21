@@ -1,4 +1,4 @@
-from log.log import *
+from core.log import *
 
 import uos
 

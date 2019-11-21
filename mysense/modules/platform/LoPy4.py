@@ -1,4 +1,4 @@
-from modules.platform_module import PlatformModule
+from core.modules import PlatformModule
 
 class LoPy4(PlatformModule):
     """
@@ -7,13 +7,12 @@ class LoPy4(PlatformModule):
     """
 
     def __init__(self):
-        import pycom
-        # disable blue flashing of the led
-        pycom.heartbeat(False)
+        pass
 
     def is_run_tests(self):
-        # TODO: only test on hard reset
-        return True
+        # only run test if not woke up from deep sleep
+        import machine
+        return machine.reset_cause() != machine.DEEPSLEEP_RESET
 
     def test(self):
         pass

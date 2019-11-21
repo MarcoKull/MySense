@@ -1,4 +1,4 @@
-from modules.status_module import StatusModule
+from core.modules import StatusModule
 
 class StatusLED(StatusModule):
     """
@@ -32,7 +32,7 @@ class StatusLED(StatusModule):
         if type == StatusModule.StatusType.sleeping:
             self.led.set_color(LoPy4LED.Color.purple)
 
-    def log(self, timestamp, level, message):
+    def log(self, level, message):
         pass
 
     def measurement(self, json):

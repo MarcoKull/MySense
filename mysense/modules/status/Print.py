@@ -1,6 +1,5 @@
-from modules.status_module import StatusModule
-from log.log_level import LogLevel
-from log.logger import Logger
+from core.modules import StatusModule
+from core.log import *
 
 class Print(StatusModule):
     """
@@ -20,9 +19,9 @@ class Print(StatusModule):
 
     def status(self, type):
         msg = "Switched to '" + str(type) + "' mode."
-        Logger().log(self.level, msg)
+        log(self.level, msg)
 
-    def log(self, timestamp, level, message):
+    def log(self, level, message):
         pass
 
     def test(self):

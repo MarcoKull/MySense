@@ -1,1 +1,2 @@
 import MySense
+MySense.run()

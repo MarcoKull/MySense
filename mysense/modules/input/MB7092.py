@@ -1,18 +1,18 @@
 from core.modules import InputModule
 from core.config_file import ConfigFile
 
-class HCSR04(InputModule):
+class MB7092(InputModule):
     """
-    Distance measuring using the HC-SR04 sensor.
+    Distance measuring using the MaxSonar MB7092 sensor.
     """
 
     def __init__(self):
-        super(HCSR04, self).__init__()
-        from drivers.hcsr04 import HCSR04 as HCSR04_drv
-        self.sensor = HCSR04_drv(self.config().get("pin_echo"), self.config().get("pin_trigger"))
+        super(MB7092, self).__init__()
+        from drivers.mb7092 import MB7092 as MB7092_drv
+        self.sensor = MB7092_drv(self.config().get("pin_tx"), self.config().get("pin_am"))
 
     def get_id():
-        return 1
+        return 2
 
     def get(self):
         # get the measurement
@@ -28,7 +28,7 @@ class HCSR04(InputModule):
     def decode(array):
         d = array[1] + (array[0] << 8)
 
-        s = "\t\"HCSR04\":\n\t{\n"
+        s = "\t\"MB7092\":\n\t{\n"
         s += "\t\t\"distance_cm\": " + str(d) + "\n\t}"
         return s
 
@@ -37,10 +37,10 @@ class HCSR04(InputModule):
 
     def get_config_definition():
         return (
-            "input_hcsr04",
-            "distance hcsr04",
+            "input_mb7092",
+            "distance mb7092",
             (
-                ("pin_echo", "20", "Defines the echo pin.", ConfigFile.VariableType.uint),
-                ("pin_trigger", "21", "Defines the trigger pin.", ConfigFile.VariableType.uint),
+                ("pin_tx", "20", "Defines the tx pin (pin 4).", ConfigFile.VariableType.uint),
+                ("pin_am", "16", "Defines the am pin (pin 3).", ConfigFile.VariableType.uint),
             )
         )

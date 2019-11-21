@@ -1,7 +1,6 @@
 from core.config_file import ConfigFile
-from log.log import *
-from modules.module import Module
-from modules.status_module import StatusModule
+from core.log import *
+from core.modules import Module, StatusModule
 
 from test.test_config import test_config
 
@@ -14,57 +13,50 @@ class Core(Module):
     """
 
     def __init__(self):
-        super(Core, self).__init__()
+        try:
+            super(Core, self).__init__()
+            self.__state = StatusModule.StatusType.booting
 
-        # set desired logging level
-        Logger().level = self.config().get("loglevel")
+            # set configurable variables
+            self.__encoded = self.config().get("encode_measurements")
+            Logger().level = self.config().get("log_level")
+            Logger().use_timestamps = self.config().get("log_timestamps")
 
-        # load status modules
-        self.__status = Core.__load_modules(self.config(), "status")
+            # load status modules
+            self.__status = Core.__load_modules(self.config(), "status")
 
-        # set status indicators to booting
-        self.__set_status(StatusModule.StatusType.booting)
+            # set status indicators to booting
+            self.__set_status(StatusModule.StatusType.booting)
 
-        # add status modules as log observers
-        for s in self.__status:
-            Logger().add(s)
+            try:
+                # add status modules as log observers
+                for s in self.__status:
+                    Logger().add(s)
 
-        # load platform module
-        self.__platform = Core.__load_module("platform", self.config().get("platform"))
+                # load platform module
+                self.__platform = Core.__load_module("platform", self.config().get("platform"))
 
-        # fallback to generic platform
-        if self.__platform == None:
-            log_warning("Defaulting to generic platform.")
-            self.__platform = Core.__load_module("platform", "Generic")
+                # load input modules
+                self.__input = Core.__load_modules(self.config(), "input")
+                if len(self.__input) == 0:
+                    log_warning("No input module loaded.")
 
-            # could not load any platform module. This is fatal.
-            if self.__platform == None:
-                return
+                # load output modules
+                self.__output = Core.__load_modules(self.config(), "output")
+                if len(self.__output) == 0:
+                    log_warning("No output module loaded.")
 
-        # load input modules
-        self.__input = Core.__load_modules(self.config(), "input")
-        if len(self.__input) == 0:
-            log_warning("No input module loaded.")
+                # load sleep module
+                self.__sleep = Core.__load_module("sleep", self.config().get("sleep"))
 
-        # load output modules
-        self.__output = Core.__load_modules(self.config(), "output")
-        if len(self.__output) == 0:
-            log_warning("No output module loaded.")
+            except Exception as e:
+                self.__set_status(StatusModule.StatusType.error)
+                raise e
 
-        # load sleep module
-        self.__sleep = Core.__load_module("sleep", self.config().get("sleep"))
-
-        # fallback to generic platform
-        if self.__sleep == None:
-            log_warning("Defaulting to software sleep.")
-            self.__sleep = Core.__load_module("sleep", "Software")
-
-            # could not load any platform module. This is fatal.
-            if self.__sleep == None:
-                return
-
-        if self.__sleep == None:
-            log_warning("No sleep module loaded.")
+        except Exception as e:
+            self.__state = StatusModule.StatusType.error
+            log_fatal(str(e))
+            raise e
 
     def __test(self):
         # set testing mode
@@ -99,82 +91,95 @@ class Core(Module):
         test_config()
 
     def run(self):
-        # run tests if platform tells so
-        if self.__platform.is_run_tests():
-            self.__test()
+        try:
+            # don't run if in error mode
+            if self.__state == StatusModule.StatusType.error:
+                return
+
+            # run tests if platform tells so
+            if self.__platform.is_run_tests():
+                self.__test()
 
 
-        # keep on measuring and sending
-        while True:
+            # keep on measuring and sending
+            while True:
 
-            # go in measuring mode
-            self.__set_status(StatusModule.StatusType.measuring)
+                # go in measuring mode
+                self.__set_status(StatusModule.StatusType.measuring)
 
-            # binary data for encoded sending
-            binary = bytearray()
+                # binary data for encoded sending
+                binary = bytearray()
 
-            # string for decoded sending
-            json = ""
+                # string for decoded sending
+                json = ""
 
-            for i in self.__input:
-                log_debug("Reading input module '" + i.__class__.__name__ + "'.")
+                for i in self.__input:
+                    log_debug("Reading input module '" + i.__class__.__name__ + "'.")
 
-                # get measurement
-                m = i.get()
-                l = len(m)
+                    # get measurement
+                    m = i.get()
+                    l = len(m)
 
-                # check length
-                if l == 0:
-                    log_info("Ignored input module '" + i.__class__.__name__ + "' - no data.")
-                    continue
-                elif l > 255:
-                    log_error("Ignored input module '" + i.__class__.__name__ + "' - data packet too big.")
-                    continue
+                    # check length
+                    if l == 0:
+                        log_warning("Ignored input module '" + i.__class__.__name__ + "' - no data.")
+                        continue
 
-                # add device id
-                binary.append(i.__class__.get_id())
+                    # add device id and length if measurement string should be encoded
+                    if self.__encoded:
+                        if l > 255:
+                            log_error("Ignored input module '" + i.__class__.__name__ + "' - data packet too big.")
+                            continue
 
-                # add data size
-                binary.append(l)
+                        # add device id
+                        binary.append(i.__class__.get_id())
 
-                # add measurement array
-                for j in m:
-                    binary.append(j)
+                        # add data size
+                        binary.append(l)
 
-                # add decoded json
-                if json != "":
-                    json += ","
-                json += "\n" + i.__class__.decode(m)
+                    # add measurement array
+                    for j in m:
+                        binary.append(j)
 
-            # add outer json curly braces
-            json = "{" + json + "\n}"
+                    # add decoded json
+                    if json != "":
+                        json += ","
+                    json += "\n" + i.__class__.decode(m)
 
-            # skip sending if no data
-            if len(binary) == 0:
-                log_info("Nothing to send.")
+                # add outer json curly braces
+                json = "{" + json + "\n}"
 
-            else:
-                # transform binary data to a base64 string
-                log_debug("Decoding input with base64.")
-                base64 = "".join(map(chr, ubinascii.b2a_base64(binary))).rstrip()
+                # skip sending if no data
+                if len(binary) == 0:
+                    log_warning("Nothing to send.")
 
-                # set outputs on status modules
-                for s in self.__status:
-                    s.measurement(json)
+                else:
+                    # transform binary data to a base64 string
+                    log_debug("Decoding input with base64.")
+                    base64 = "".join(map(chr, ubinascii.b2a_base64(binary))).rstrip()
 
-                # send data
-                self.__set_status(StatusModule.StatusType.sending)
-                for o in self.__output:
-                    log_debug("Sending to output module '" + o.__class__.__name__ + "'.")
-                    o.send(binary, base64, json)
+                    # set outputs on status modules
+                    for s in self.__status:
+                        s.measurement(json)
 
-            # go to sleep
-            self.__set_status(StatusModule.StatusType.sleeping)
-            self.__sleep.sleep()
+                    # send data
+                    self.__set_status(StatusModule.StatusType.sending)
+                    for o in self.__output:
+                        log_debug("Sending to output module '" + o.__class__.__name__ + "'.")
+                        o.send(binary, base64, json)
 
-        # this should not be reached
-        __set_status(status, StatusModule.StatusType.error)
-        log_error("MySense stopped.")
+                # go to sleep
+                self.__set_status(StatusModule.StatusType.sleeping)
+                self.__sleep.sleep()
+
+            # this should not be reached
+            self.__set_status(StatusModule.StatusType.error)
+            log_fatal("MySense stopped.")
+
+        except Exception as e:
+            self.__set_status(StatusModule.StatusType.error)
+            log_fatal(str(e))
+
 
     def get_config_definition():
         return (
@@ -185,12 +190,16 @@ class Core(Module):
                 ("input", "DateTime", "Specifies the input modules using space as seperator.", ConfigFile.VariableType.string),
                 ("output", "Print", "Specifies the input modules using space as seperator.", ConfigFile.VariableType.string),
                 ("status", "StatusLED Print", "Specifies the status modules using space as seperator.", ConfigFile.VariableType.string),
-                ("sleep", "Software", "Specifies the sleeping module. Only one module allowed", ConfigFile.VariableType.string),
-                ("loglevel", "info", "Defines the minimal log level to be printed.", ConfigFile.VariableType.loglevel)
+                ("sleep", "Soft", "Specifies the sleeping module. Only one module allowed", ConfigFile.VariableType.string),
+                ("encode_measurements", "true", "Encode the measurement sting.\nIf this is set the device id and length of the data packet is added to every input module.\nThis makes it easy to convert the measurements to JSON format, but it adds an overload of 2 bytes per input module.\n\nEnable this if you have many input modules that you need to decode.", ConfigFile.VariableType.bool),
+                ("log_level", "info", "Defines the minimal log level to be printed.", ConfigFile.VariableType.loglevel),
+                ("log_file", "", "Path to a log file.", ConfigFile.VariableType.string),
+                ("log_timestamps", "false", "Use timestamps in logs.", ConfigFile.VariableType.bool)
             )
         )
 
     def __set_status(self, status):
+        self.state = status
         for s in self.__status:
             s.status(status)
 
@@ -246,7 +255,8 @@ class Core(Module):
             return getattr(__import__('modules.' + type + "." + name,[], [], [name]), name)
 
         except Exception as e:
-            log_error("Could not load " + type + " module class '" + name + "': " + str(e) + "." )
+            log_fatal("Could not load " + type + " module class '" + name + "'.")
+            raise e
 
     def __load_module(type, name):
         # loading the class
@@ -260,12 +270,12 @@ class Core(Module):
             return klass()
 
         except Exception as e:
-            log_error("Could not load " + type + " module '" + name + "': " + str(e) + "." )
+            log_fatal("Could not load " + type + " module '" + name + "'.")
+            raise e
 
     def __load_modules(conf, type):
         modules = []
         for i in str(conf.get(type)).split(" "):
-            m = Core.__load_module(type, i)
-            if m != None:
-                modules.append(m)
+            if len(i) != 0:
+                modules.append(Core.__load_module(type, i))
         return modules

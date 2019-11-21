@@ -20,13 +20,13 @@ class LoRaOTAA(OutputModule):
 
         # initialize lora network
         from network import LoRa
-        lora = LoRa(mode=LoRa.LORAWAN, region=LoRa.EU868)
+        self.lora = LoRa(mode=LoRa.LORAWAN, region=LoRa.EU868)
 
         # try to load previous lora connection if waking up from deep sleep
         if reset_cause == machine.DEEPSLEEP_RESET:
-            lora.nvram_restore()
+            self.lora.nvram_restore()
 
-        if reset_cause == machine.DEEPSLEEP_RESET and lora.has_joined():
+        if reset_cause == machine.DEEPSLEEP_RESET and self.lora.has_joined():
             log_info("Restored previous LoRaWAN join.")
 
         else:
@@ -36,14 +36,13 @@ class LoRaOTAA(OutputModule):
             app_key = ubinascii.unhexlify(self.config().get("app_key"))
 
             # join a network using OTAA (Over the Air Activation)
-            lora.join(activation=LoRa.OTAA, auth=(app_eui, app_key), timeout=0)
+            self.lora.join(activation=LoRa.OTAA, auth=(app_eui, app_key), timeout=0)
 
             # wait until the module has joined the network
             log_debug("Waiting until LoRa has joined.")
-            while not lora.has_joined():
+            while not self.lora.has_joined():
                 pass
             log_info("Joined LoRa network.")
-            lora.nvram_save()
 
         # create a lora socket to send data
         import socket
@@ -70,6 +69,9 @@ class LoRaOTAA(OutputModule):
         data = self.socket.recv(64)
 
         # TODO activate ota mode
+
+        # save lora connection
+        self.lora.nvram_save()
 
     def test(self):
         pass

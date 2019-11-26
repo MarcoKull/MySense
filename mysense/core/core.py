@@ -162,8 +162,8 @@ class Core(Module):
 
                 else:
                     # transform binary data to a base64 string
-                    log_debug("Decoding input with base64.")
                     base64 = "".join(map(chr, ubinascii.b2a_base64(binary))).rstrip()
+                    json_base64 = "".join(map(chr, ubinascii.b2a_base64(json))).rstrip()
 
                     # set outputs on status modules
                     for s in self.__status:
@@ -173,7 +173,7 @@ class Core(Module):
                     self.__set_status(StatusModule.StatusType.sending)
                     for o in self.__output:
                         log_debug("Sending to output module '" + o.__class__.__name__ + "'.")
-                        o.send(binary, base64, json)
+                        o.send(binary, base64, json, json_base64)
 
                 # go to sleep
                 self.__set_status(StatusModule.StatusType.sleeping)

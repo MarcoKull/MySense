@@ -94,8 +94,8 @@ class OutputModule(Module):
     def __init__(self):
         super(OutputModule, self).__init__()
 
-    def send(self, binary, base64, json):
-        raise NotImplementedError("The send(binary, base64, json) method has to implemented by a OutputModule child class.")
+    def send(self, binary, base64, json, json_base64):
+        raise NotImplementedError("The send(binary, base64, json, json_base64) method has to implemented by a OutputModule child class.")
 
 
 

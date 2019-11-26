@@ -52,7 +52,7 @@ class LoRaOTAA(OutputModule):
         self.socket.setsockopt(socket.SOL_LORA, socket.SO_DR, 5)
 
 
-    def send(self, binary, base64, json):
+    def send(self, binary, base64, json, json_base64):
         # make the socket blocking
         # (waits for the data to be sent and for the 2 receive windows to expire)
         self.socket.setblocking(True)

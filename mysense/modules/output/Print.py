@@ -18,9 +18,10 @@ class Print(OutputModule):
 
     log_level = property(get_log_level, set_log_level)
 
-    def send(self, binary, base64, json):
-        s = "Output: sizes - binary(" + str(len(binary)) + ") base64(" + str(len(base64)) + ") json(" + str(len(json)) + ")\n"
+    def send(self, binary, base64, json, json_base64):
+        s = "Output: sizes - binary(" + str(len(binary)) + ") base64(" + str(len(base64)) + ") json(" + str(len(json)) + ") json_base64(" + str(len(json_base64)) + ")\n"
         s += " BASE64: " + base64 + "\n"
+        s += " JSON BASE64: " + json_base64 + "\n"
         s += " JSON:\n" + json
         log(self.level, s)
 

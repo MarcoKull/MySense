@@ -275,8 +275,6 @@ class Adafruit_BME680:
         if time.ticks_ms() - self._last_reading < self._min_refresh_time:
             return
 
-        print("reading!")
-
         # set filter
         self._write(_BME680_REG_CONFIG, [self._filter << 2])
         # turn on temp oversample & pressure oversample
@@ -430,7 +428,7 @@ class Adafruit_BME680_SPI(Adafruit_BME680):
 
 from drivers.i2c_device import I2CDevice
 class BME680(I2CDevice, Adafruit_BME680_I2C):
-    """This is a wrapper class for the BME680 driver to be included into MySenses."""
+    """This is a wrapper class for the BME680 driver to be included into MySense."""
 
     def __init__(self, pin_sda, pin_scl):
         I2CDevice.__init__(self, "BME680", 0x77, pin_sda, pin_scl)

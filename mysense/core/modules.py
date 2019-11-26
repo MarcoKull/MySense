@@ -56,7 +56,34 @@ class InputModule(Module):
     def decode(array):
         raise NotImplementedError("The decode(array) method has to implemented by a InputModule child class.")
 
+    def bytearray_to_uint16(array, offset):
+        return array[offset + 1] + (array[offset + 0] << 8)
 
+    def uint16_to_bytearray(uint16):
+        nr = int(uint16)
+        arr = bytearray(2)
+        arr[0] = (nr >> 8) & 0xff
+        arr[1] = nr & 0xff
+        return arr
+
+    def bytearray_to_uint32(array, offset):
+        return (InputModule.bytearray_to_uint16(array, offset) << 16) + InputModule.bytearray_to_uint16(array, offset + 2)
+
+    def uint32_to_bytearray(uint32):
+        nr = int(uint32)
+        arr = bytearray(4)
+        arr[0] = (nr >> 24) & 0xffff
+        arr[1] = (nr >> 16) & 0xffff
+        arr[2] = (nr >> 8) & 0xffff
+        arr[3] = nr & 0xffff
+        return arr
+
+    def concat_bytearrays(arrays):
+        arr = bytearray(0)
+        for i in range(0, len(arrays)):
+            for j in arrays[i]:
+                arr.append(j)
+        return arr
 
 class OutputModule(Module):
     """

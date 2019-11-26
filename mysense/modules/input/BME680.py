@@ -8,7 +8,7 @@ class BME680(InputModule):
 
     def __init__(self):
         super(BME680, self).__init__()
-        from drivers.adafruit_bme680 import BME680 as BME680_drv
+        from drivers.bme680 import BME680 as BME680_drv
         self.sensor = BME680_drv(self.config().get("pin_sda"), self.config().get("pin_scl"))
 
     def get_id():
@@ -46,7 +46,7 @@ class BME680(InputModule):
 
     def get_config_definition():
         return (
-            "input_bme460",
+            "input_bme680",
             "Adds support for the Bosch BME680 sensor.\nIt measures humidity, gas, altitude, temperature and airpressure.",
             (
                 ("pin_sda", "20", "Defines the sda pin.", ConfigFile.VariableType.uint),

@@ -1,4 +1,5 @@
 from machine import I2C, Pin
+from core.log import *
 
 class I2CDevice():
     """docstring for I2C_Device."""
@@ -7,6 +8,8 @@ class I2CDevice():
 
     def __init__(self, name, address, pin_sda, pin_scl):
         self.address = address
+
+        log_debug("Initializing device '" + name + "' I2C bus " + str(I2CDevice.__counter) + " with pins sda " + str(pin_sda) + " and scl " + str(pin_scl) + ".")
 
         # create i2c bus
         self.i2c = I2C(I2CDevice.__counter)
@@ -17,7 +20,7 @@ class I2CDevice():
 
         # scan for device
         if address not in self.i2c.scan():
-            raise Exception(name + " not found on I2C bus at " + str(address))
+            raise Exception(name + " not found on I2C bus at " + hex(address))
 
 
     def readinto(self, buf, **kwargs):

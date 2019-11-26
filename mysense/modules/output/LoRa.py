@@ -3,7 +3,7 @@ from core.config_file import ConfigFile
 
 from core.log import *
 
-class LoRaOTAA(OutputModule):
+class LoRa(OutputModule):
     """
     Example of an output module that prints the output to the log.
     """

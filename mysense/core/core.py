@@ -6,6 +6,7 @@ from test.test_config import test_config
 
 import ubinascii # for base64 conversion
 import uos # for listdir()
+import sys # for printing exception tracebacks
 
 class Core(Module):
     """
@@ -13,6 +14,10 @@ class Core(Module):
     """
 
     def __init__(self):
+
+        # set status to none for exception handling
+        self.__status = None
+
         try:
             super(Core, self).__init__()
             self.__state = StatusModule.StatusType.booting
@@ -28,35 +33,37 @@ class Core(Module):
             # set status indicators to booting
             self.__set_status(StatusModule.StatusType.booting)
 
-            try:
-                # add status modules as log observers
-                for s in self.__status:
-                    Logger().add(s)
 
-                # load platform module
-                self.__platform = Core.__load_module("platform", self.config().get("platform"))
+            # add status modules as log observers
+            for s in self.__status:
+                Logger().add(s)
 
-                # load input modules
-                self.__input = Core.__load_modules(self.config(), "input")
-                if len(self.__input) == 0:
-                    log_warning("No input module loaded.")
+            # load platform module
+            self.__platform = Core.__load_module("platform", self.config().get("platform"))
 
-                # load output modules
-                self.__output = Core.__load_modules(self.config(), "output")
-                if len(self.__output) == 0:
-                    log_warning("No output module loaded.")
+            # load input modules
+            self.__input = Core.__load_modules(self.config(), "input")
+            if len(self.__input) == 0:
+                log_warning("No input module loaded.")
 
-                # load sleep module
-                self.__sleep = Core.__load_module("sleep", self.config().get("sleep"))
+            # load output modules
+            self.__output = Core.__load_modules(self.config(), "output")
+            if len(self.__output) == 0:
+                log_warning("No output module loaded.")
 
-            except Exception as e:
-                self.__set_status(StatusModule.StatusType.error)
-                raise e
+            # load sleep module
+            self.__sleep = Core.__load_module("sleep", self.config().get("sleep"))
 
         except Exception as e:
-            self.__state = StatusModule.StatusType.error
-            log_fatal(str(e))
-            raise e
+            self.__fatal(e)
+
+    def __fatal(self, exception):
+        if self.__status != None:
+            self.__set_status(StatusModule.StatusType.error)
+
+        self.__state = StatusModule.StatusType.error
+        log_fatal(str(exception))
+        sys.print_exception(exception)
 
     def __test(self):
         # set testing mode
@@ -177,8 +184,7 @@ class Core(Module):
             log_fatal("MySense stopped.")
 
         except Exception as e:
-            self.__set_status(StatusModule.StatusType.error)
-            log_fatal(str(e))
+            self.__fatal(e)
 
 
     def get_config_definition():

@@ -33,10 +33,10 @@ class BME680(InputModule):
         g = InputModule.bytearray_to_uint32(array, 10)
 
         s = "\t\"BME680\":\n\t{\n"
-        s += "\t\t\"temperature\": " + str(t) + "\n"
-        s += "\t\t\"humidity\": " + str(h) + "\n"
-        s += "\t\t\"pressure\": " + str(p) + "\n"
-        s += "\t\t\"altitude\": " + str(a) + "\n"
+        s += "\t\t\"temperature\": " + str(t) + ",\n"
+        s += "\t\t\"humidity\": " + str(h) + ",\n"
+        s += "\t\t\"pressure\": " + str(p) + ",\n"
+        s += "\t\t\"altitude\": " + str(a) + ",\n"
         s += "\t\t\"gas\": " + str(g) + "\n"
         s += "\t}"
         return s

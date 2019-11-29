@@ -11,7 +11,7 @@ class PMSx003(InputModule):
     def __init__(self):
         super(PMSx003, self).__init__()
         from drivers.pmsx003 import PMSx003 as PMSx003_drv
-        self.sensor = PMSx003_drv()
+        self.sensor = PMSx003_drv(pins=("P" + str(self.config().get("pin_rx")), "P" + str(self.config().get("pin_tx"))))
 
     def get_id():
         return 4
@@ -57,4 +57,11 @@ class PMSx003(InputModule):
         pass
 
     def get_config_definition():
-        return None
+        return (
+            "input_pmsx003",
+            "Support for the PMSx003 fine particle sensor.",
+            (
+                ("pin_rx", "3", "Defines RX pin.", ConfigFile.VariableType.uint),
+                ("pin_tx", "4", "Defines TX pin.", ConfigFile.VariableType.uint),
+            )
+        )

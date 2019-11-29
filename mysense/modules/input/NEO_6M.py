@@ -9,7 +9,7 @@ class NEO_6M(InputModule):
     def __init__(self):
         super(NEO_6M, self).__init__()
         from drivers.gps_dexter import GROVEGPS
-        self.sensor = GROVEGPS()
+        self.sensor = GROVEGPS(pins=("P" + str(self.config().get("pin_rx")), "P" + str(self.config().get("pin_tx"))))
 
     def get_id():
         return 0
@@ -37,4 +37,11 @@ class NEO_6M(InputModule):
         pass
 
     def get_config_definition():
-        return None
+        return (
+            "input_neo-6m",
+            "Support for the NEO-6M GPS sensor.",
+            (
+                ("pin_rx", "3", "Defines RX pin.", ConfigFile.VariableType.uint),
+                ("pin_tx", "4", "Defines TX pin.", ConfigFile.VariableType.uint),
+            )
+        )

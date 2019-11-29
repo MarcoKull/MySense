@@ -229,12 +229,10 @@ class Core(Module):
 
         # iterate over module types
         for i in ("input", "output", "platform", "sleep", "status"):
-
             # list module folder
             for j in uos.ilistdir("modules/" + i):
-
                 # only regard normal files
-                if j[1] != 8:
+                if j[0] == "." or j[0] == "..":
                     continue
 
                 # load module class

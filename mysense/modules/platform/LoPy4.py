@@ -1,4 +1,6 @@
+from core.config_file import ConfigFile
 from core.modules import PlatformModule
+from core.log import *
 
 class LoPy4(PlatformModule):
     """
@@ -7,7 +9,14 @@ class LoPy4(PlatformModule):
     """
 
     def __init__(self):
-        pass
+        super(LoPy4, self).__init__()
+
+        # configure power pins
+        from machine import Pin
+        for i in self.config().get("pwr_pins"):
+            log_debug("Activating power pin " + str(i) + ".")
+            p = Pin("P" + str(i),mode=Pin.OUT)
+            p.value(1)
 
     def is_run_tests(self):
         # only run test if not woke up from deep sleep
@@ -18,4 +27,10 @@ class LoPy4(PlatformModule):
         pass
 
     def get_config_definition():
-        return None
+        return (
+            "platform_lopy4",
+            "LoPy4 platform options.",
+            (
+                ("pwr_pins", "", "A list of pins seperated by spaces which are used as power sources.", ConfigFile.VariableType.uint_list),
+            )
+        )

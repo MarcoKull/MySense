@@ -233,6 +233,18 @@ class ConfigFile():
             except:
                 return None
 
+        # uint_list type
+        elif type == ConfigFile.VariableType.uint_list:
+            try:
+                nr = []
+                if len(value) > 0:
+                    for i in value.split(" "):
+                        nr.append(int(i))
+                return nr
+
+            except:
+                return None
+
         # loglevel type
         elif type == ConfigFile.VariableType.loglevel:
             if value == "all":
@@ -268,6 +280,7 @@ class ConfigFile():
     class VariableType():
         bool = "bool"
         uint = "uint"
+        uint_list = "uint_list"
         string = "string"
         loglevel = "loglevel"
         path = "path"

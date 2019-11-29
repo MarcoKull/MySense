@@ -15,21 +15,11 @@ class HCSR04(InputModule):
         return 1
 
     def get(self):
-        # get the measurement
-        d = self.sensor.measure()
-
-        # transform it to 2 bytes
-        arr = bytearray(2)
-        arr[0] = (d >> 8) & 0xff
-        arr[1] = d & 0xff
-
-        return arr
+        return InputModule.uint16_to_bytearray(self.sensor.measure())
 
     def decode(array):
-        d = array[1] + (array[0] << 8)
-
         s = "\t\"HCSR04\":\n\t{\n"
-        s += "\t\t\"distance_cm\": " + str(d) + "\n\t}"
+        s += "\t\t\"distance_cm\": " + str(bytearray_to_uint16(array, 0)) + "\n\t}"
         return s
 
     def test(self):

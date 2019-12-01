@@ -1,5 +1,6 @@
 from core.modules import InputModule
 from core.config_file import ConfigFile
+from core.uart import UARTDevice
 
 class NEO_6M(InputModule):
     """
@@ -9,7 +10,7 @@ class NEO_6M(InputModule):
     def __init__(self):
         super(NEO_6M, self).__init__()
         from drivers.gps_dexter import GROVEGPS
-        self.sensor = GROVEGPS(pins=("P" + str(self.config().get("pin_rx")), "P" + str(self.config().get("pin_tx"))))
+        self.sensor = GROVEGPS(port=UARTDevice.port_number(), pins=("P" + str(self.config().get("pin_rx")), "P" + str(self.config().get("pin_tx"))))
 
     def get_id():
         return 0

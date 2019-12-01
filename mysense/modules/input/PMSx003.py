@@ -1,5 +1,6 @@
 from core.modules import InputModule
 from core.config_file import ConfigFile
+from core.uart import UARTDevice
 
 import utime
 
@@ -11,7 +12,7 @@ class PMSx003(InputModule):
     def __init__(self):
         super(PMSx003, self).__init__()
         from drivers.pmsx003 import PMSx003 as PMSx003_drv
-        self.sensor = PMSx003_drv(pins=("P" + str(self.config().get("pin_rx")), "P" + str(self.config().get("pin_tx"))))
+        self.sensor = PMSx003_drv(port=UARTDevice.port_number(), pins=("P" + str(self.config().get("pin_rx")), "P" + str(self.config().get("pin_tx"))))
 
     def get_id():
         return 4

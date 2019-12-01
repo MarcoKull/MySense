@@ -1,7 +1,5 @@
 from core.log import *
 
-from machine import I2C, Pin
-
 class I2C_Device(object):
     """
     Handles devices that connect to an I2C bus.
@@ -10,6 +8,8 @@ class I2C_Device(object):
     __counter = 0
 
     def __init__(self, name, address, pin_sda, pin_scl):
+        from machine import I2C, Pin
+        
         self.address = address
 
         log_debug("Initializing device '" + name + "' on I2C bus " + str(I2C_Device.__counter) + " with pins sda " + str(pin_sda) + " and scl " + str(pin_scl) + ".")

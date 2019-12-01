@@ -1,18 +1,19 @@
 from core.modules import InputModule
 from core.config_file import ConfigFile
-from core.uart import UARTDevice
+from core.devices import UART_Device
 
 import utime
 
-class PMSx003(InputModule):
+class PMSx003(InputModule, UART_Device):
     """
     Import module for the PMSx003 fine particular sensor.
     """
 
     def __init__(self):
-        super(PMSx003, self).__init__()
+        InputModule.__init__(self)
+        UART_Device.__init__(self, "PMSx003")
         from drivers.pmsx003 import PMSx003 as PMSx003_drv
-        self.sensor = PMSx003_drv(port=UARTDevice.port_number(), pins=("P" + str(self.config().get("pin_rx")), "P" + str(self.config().get("pin_tx"))))
+        self.sensor = PMSx003_drv(port=self.uart_port(), pins=("P" + str(self.config().get("pin_rx")), "P" + str(self.config().get("pin_tx"))))
 
     def get_id():
         return 4

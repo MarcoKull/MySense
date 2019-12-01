@@ -426,10 +426,10 @@ class Adafruit_BME680_SPI(Adafruit_BME680):
             spi_mem_page = 0x10
         self._write(_BME680_REG_STATUS, [spi_mem_page])
 
-from drivers.i2c_device import I2CDevice
-class BME680(I2CDevice, Adafruit_BME680_I2C):
+from core.devices import I2C_Device
+class BME680(I2C_Device, Adafruit_BME680_I2C):
     """This is a wrapper class for the BME680 driver to be included into MySense."""
 
     def __init__(self, pin_sda, pin_scl):
-        I2CDevice.__init__(self, "BME680", 0x77, pin_sda, pin_scl)
+        I2C_Device.__init__(self, "BME680", 0x77, pin_sda, pin_scl)
         Adafruit_BME680_I2C.__init__(self, self)

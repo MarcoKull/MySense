@@ -27,19 +27,18 @@ class Core(Module):
             Logger().level = self.config().get("log_level")
             Logger().use_timestamps = self.config().get("log_timestamps")
 
+            # load platform module
+            self.__platform = Core.__load_module("platform", self.config().get("platform"))
+
             # load status modules
             self.__status = Core.__load_modules(self.config(), "status")
 
             # set status indicators to booting
             self.__set_status(StatusModule.StatusType.booting)
 
-
             # add status modules as log observers
             for s in self.__status:
                 Logger().add(s)
-
-            # load platform module
-            self.__platform = Core.__load_module("platform", self.config().get("platform"))
 
             # load input modules
             self.__input = Core.__load_modules(self.config(), "input")

@@ -8,7 +8,7 @@ class LoRa(OutputModule):
     Example of an output module that prints the output to the log.
     """
     def __init__(self):
-        super(LoRaOTAA, self).__init__()
+        super(LoRa, self).__init__()
 
         # check if safety variable is true
         if not self.config().get("antenna_connected"):
@@ -19,8 +19,8 @@ class LoRa(OutputModule):
         reset_cause = machine.reset_cause()
 
         # initialize lora network
-        from network import LoRa
-        self.lora = LoRa(mode=LoRa.LORAWAN, region=LoRa.EU868)
+        from network import LoRa as LoRa_drv
+        self.lora = LoRa_drv(mode=LoRa_drv.LORAWAN, region=LoRa_drv.EU868)
 
         # try to load previous lora connection if waking up from deep sleep
         if reset_cause == machine.DEEPSLEEP_RESET:
@@ -36,7 +36,7 @@ class LoRa(OutputModule):
             app_key = ubinascii.unhexlify(self.config().get("app_key"))
 
             # join a network using OTAA (Over the Air Activation)
-            self.lora.join(activation=LoRa.OTAA, auth=(app_eui, app_key), timeout=0)
+            self.lora.join(activation=LoRa_drv.OTAA, auth=(app_eui, app_key), timeout=0)
 
             # wait until the module has joined the network
             log_debug("Waiting until LoRa has joined.")

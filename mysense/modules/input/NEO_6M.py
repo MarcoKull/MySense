@@ -15,7 +15,7 @@ class NEO_6M(InputModule, UART_Device):
         self.sensor = GROVEGPS(port=self.uart_port(), pins=("P" + str(self.config().get("pin_rx")), "P" + str(self.config().get("pin_tx"))))
 
     def get_id():
-        return 0
+        return 5
 
     def get(self):
         data = self.sensor.MyGPS()

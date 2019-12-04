@@ -3,7 +3,8 @@ from core.config_file import ConfigFile
 
 class Battery(InputModule):
     """
-    A simple date/time input module.
+    Reading battery voltage using an analog digital converter.
+    The output is between 0 (empty) and 255 (fully charged).
     """
 
     def __init__(self):

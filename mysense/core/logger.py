@@ -44,7 +44,7 @@ class Logger():
         return self.__lvl
 
     def set_level(self, level):
-        self.__observers[0].level = level
+        self.__observers[0].__lvl = level
         self.__lvl = level
 
     level = property(get_level, set_level)
@@ -115,7 +115,7 @@ class LogPrinter(LogObserver):
     """
     def __init__(self):
         super(LogPrinter, self).__init__()
-        self.__lvl = LogLevel.fatal
+        self.__lvl = LogLevel.debug
         self.__timestamps = False
 
     def log(self, level, message):

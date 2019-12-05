@@ -96,6 +96,10 @@ class Core(Module):
         log_debug("Running config file test.")
         test_config()
 
+        log_debug("Test loading platform modules.")
+        for i in Core.__list_modules("platform"):
+            print(i)
+
     def run(self):
         try:
             # don't run if in error mode

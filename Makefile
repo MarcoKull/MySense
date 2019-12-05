@@ -7,9 +7,6 @@ PYTHON=python -B
 clean:
 	rm mysense/config/*
 
-config:
-	cd myconf; ${PYTHON} -c "import MyConf; MyConf.run()"
-
 default_config:
 	cd mysense; ${MICROPYTHON} -c "import MySense; MySense.default_config()"
 

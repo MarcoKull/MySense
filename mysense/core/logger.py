@@ -41,11 +41,11 @@ class Logger():
 
     # log level
     def get_level(self):
-        return self.lvl
+        return self.__lvl
 
     def set_level(self, level):
         self.__observers[0].level = level
-        self.lvl = level
+        self.__lvl = level
 
     level = property(get_level, set_level)
 

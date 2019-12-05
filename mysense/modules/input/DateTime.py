@@ -38,7 +38,7 @@ class DateTime(InputModule):
         return s
 
     def test(self):
-        pass
+        self.get()
 
     def get_config_definition():
         return None

@@ -56,7 +56,7 @@ class PMSx003(InputModule, UART_Device):
         return s
 
     def test(self):
-        pass
+        self.get()
 
     def get_config_definition():
         return (

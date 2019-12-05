@@ -93,12 +93,27 @@ class Core(Module):
     def test():
         log_info("Running tests.")
 
-        log_debug("Running config file test.")
+        log_info("Running config file test.")
         test_config()
 
-        log_debug("Test loading platform modules.")
-        for i in Core.__list_modules("platform"):
-            print(i)
+        # load all module classes to check for import and syntax errors
+        for i in ("platform", "input", "output", "sleep"):
+            log_info("Test loading " + i + " module classes.")
+            for j in Core.__list_modules(i):
+                Core.__load_class(i, j)
+
+        # check if input device id's are unique
+        log_info("Testing for unique input module ids.")
+        ids = []
+        for i in range(0, 256):
+            ids.append("")
+
+        for i in Core.__list_modules("input"):
+            klass = Core.__load_class("input", i)
+            if len(ids[klass.get_id()]) == 0:
+                ids[klass.get_id()] = i
+            else:
+                raise Exception("Id " + str(klass.get_id()) + " should be unique but is used by input modules '" + ids[klass.get_id()] + "' and '" + i + "'.")
 
     def run(self):
         try:
@@ -217,9 +232,8 @@ class Core(Module):
 
         # list module directory
         for i in uos.ilistdir("modules/" + type):
-
             # skip directories
-            if i[1] != 8:
+            if i[0] == "." or i[0] == "..":
                 continue
 
             modules.append(i[0][:-3])
@@ -233,13 +247,10 @@ class Core(Module):
         # iterate over module types
         for i in ("input", "output", "platform", "sleep", "status"):
             # list module folder
-            for j in uos.ilistdir("modules/" + i):
-                # only regard normal files
-                if j[0] == "." or j[0] == "..":
-                    continue
+            for j in Core.__list_modules(i):
 
                 # load module class
-                klass = Core.__load_class(i, j[0][:-3])
+                klass = Core.__load_class(i, j)
 
                 # skip unloadable classes
                 if klass == None:

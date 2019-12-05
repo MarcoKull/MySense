@@ -1,17 +1,20 @@
 # micropython
-PYTHON=micropython
+MICROPYTHON=micropython
+
+# python
+PYTHON=python -B
 
 clean:
 	rm mysense/config/*
 
 config:
-	cd mysense; ${PYTHON} -c "import MySense; MySense.config()"
+	cd myconf; ${PYTHON} -c "import MyConf; MyConf.run()"
 
 default_config:
-	cd mysense; ${PYTHON} -c "import MySense; MySense.default_config()"
+	cd mysense; ${MICROPYTHON} -c "import MySense; MySense.default_config()"
 
 run:
-	cd mysense; ${PYTHON} -c "import MySense; MySense.run()"
+	cd mysense; ${MICROPYTHON} -c "import MySense; MySense.run()"
 
 test:
-	cd mysense; ${PYTHON} -c "import MySense; MySense.test()"
+	cd mysense; ${MICROPYTHON} -c "import MySense; MySense.test()"

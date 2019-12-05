@@ -1,2 +1,4 @@
 import MySense
-MySense.run()
+import machine
+if machine.reset_cause() != machine.PWRON_RESET:
+    MySense.run()

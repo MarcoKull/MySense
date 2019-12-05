@@ -115,7 +115,7 @@ class LogPrinter(LogObserver):
     """
     def __init__(self):
         super(LogPrinter, self).__init__()
-        self.__lvl = LogLevel.debug
+        self.__lvl = LogLevel.info
         self.__timestamps = False
 
     def log(self, level, message):

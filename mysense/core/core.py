@@ -188,10 +188,10 @@ class Core(Module):
             "core",
             "In this file you specify which modules should be used.",
             (
-                ("platform", "LoPy4", "Specifies the platform module. Only one module allowed", ConfigFile.VariableType.string),
+                ("platform", "Generic", "Specifies the platform module. Only one module allowed", ConfigFile.VariableType.string),
                 ("input", "DateTime", "Specifies the input modules using space as seperator.", ConfigFile.VariableType.string),
                 ("output", "Print", "Specifies the input modules using space as seperator.", ConfigFile.VariableType.string),
-                ("status", "StatusLED Print", "Specifies the status modules using space as seperator.", ConfigFile.VariableType.string),
+                ("status", "Print", "Specifies the status modules using space as seperator.", ConfigFile.VariableType.string),
                 ("sleep", "Soft", "Specifies the sleeping module. Only one module allowed", ConfigFile.VariableType.string),
                 ("encode_measurements", "true", "Encode the measurement sting.\nIf this is set the device id and length of the data packet is added to every input module.\nThis makes it easy to convert the measurements to JSON format, but it adds an overload of 2 bytes per input module.\n\nEnable this if you have many input modules that you need to decode.", ConfigFile.VariableType.bool),
                 ("log_level", "info", "Defines the minimal log level to be printed.", ConfigFile.VariableType.loglevel),

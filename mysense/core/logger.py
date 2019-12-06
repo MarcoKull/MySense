@@ -2,7 +2,10 @@
 from core.log import LogLevel
 
  # for timestamp creation
-import utime
+try:
+    import time # python
+except:
+    import utime as time # micropython
 
 class Logger():
     """

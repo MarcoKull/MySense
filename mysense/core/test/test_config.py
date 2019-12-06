@@ -1,6 +1,9 @@
 from core.log import *
 
-import uos
+try:
+    import os # python
+except:
+    import uos as os # micropython
 
 from core.config_file import ConfigFile
 
@@ -56,7 +59,7 @@ def test_config():
     if file_exists(PATH_TESTCONFIG):
         # remove test config file in case it exists
         try:
-            uos.remove(PATH_TESTCONFIG)
+            os.remove(PATH_TESTCONFIG)
         except:
             # some micropython distributions don't implement uos.remove()
             pass

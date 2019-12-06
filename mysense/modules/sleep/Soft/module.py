@@ -2,7 +2,10 @@ from core.modules import SleepModule
 from core.config_file import ConfigFile
 from core.log import *
 
-import utime
+try:
+    import time # python
+except:
+    import utime as time # micropython
 
 class Soft(SleepModule):
     """
@@ -29,7 +32,7 @@ class Soft(SleepModule):
         # this not just for printing but also possibly for feeding a watchdog timer
         for i in range(self.seconds, 0, -1):
             log_all("Software sleep for " + str(i) + " seconds.")
-            utime.sleep(1)
+            time.sleep(1)
 
 
     def test(self):

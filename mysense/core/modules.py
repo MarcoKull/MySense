@@ -42,17 +42,23 @@ class Module():
         return self.__conf
 
     def list_modules(type):
-        modules = []
+        # micropython
+        try:
+            modules = []
 
-        # list module directory
-        for i in os.ilistdir("modules/" + type):
-            # skip directories
-            if i[0] == "." or i[0] == "..":
-                continue
+            # list module directory
+            for i in os.ilistdir("modules/" + type):
+                # skip directories
+                if i[0] == "." or i[0] == "..":
+                    continue
 
-            modules.append(i[0])
+                modules.append(i[0])
 
-        return modules
+            return modules
+
+        # python
+        except:
+            return os.listdir("modules/" + type)
 
     def load_class(type, name):
         log_debug("Loading " + type + " module class '" + name + "'.")

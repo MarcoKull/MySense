@@ -4,9 +4,26 @@ from core.modules import Module, StatusModule
 
 from core.test.tests import run_tests
 
-import ubinascii # for base64 conversion
-import uos # for listdir()
-import sys # for printing exception tracebacks
+# for base64 conversion
+try:
+    import binascii
+except:
+    import ubinascii as binascii
+
+# for printing exception tracebacks
+import sys
+try:
+    import traceback # python
+except:
+    pass
+
+
+#for ilistdir()
+try:
+    import os # python
+except:
+    import uos as os # micropython
+
 
 class Core(Module):
     """
@@ -62,7 +79,12 @@ class Core(Module):
 
         self.__state = StatusModule.StatusType.error
         log_fatal(str(exception))
-        sys.print_exception(exception)
+
+        exc_info = sys.exc_info()
+        try:
+            sys.print_exception(exception) # micropython
+        except:
+            traceback.print_exception(*exc_info) # python
 
     def __test(self):
         # set testing mode
@@ -158,8 +180,8 @@ class Core(Module):
 
                 else:
                     # transform binary data to a base64 string
-                    base64 = "".join(map(chr, ubinascii.b2a_base64(binary))).rstrip()
-                    json_base64 = "".join(map(chr, ubinascii.b2a_base64(json))).rstrip()
+                    base64 = "".join(map(chr, binascii.b2a_base64(binary))).rstrip()
+                    json_base64 = "".join(map(chr, binascii.b2a_base64(json.encode()))).rstrip()
 
                     # set outputs on status modules
                     for s in self.__status:
@@ -288,7 +310,7 @@ class Core(Module):
         return "{\n" + s + "\n}"
 
     def __decode_base64(str):
-        return Core.__decode(ubinascii.a2b_base64(str))
+        return Core.__decode(binascii.a2b_base64(str))
 
     def decode(str):
         return Core.__decode_base64(str)

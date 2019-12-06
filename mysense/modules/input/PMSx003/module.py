@@ -2,8 +2,6 @@ from core.modules import InputModule
 from core.config_file import ConfigFile
 from core.devices import UART_Device
 
-import utime
-
 class PMSx003(InputModule, UART_Device):
     """
     Import module for the PMSx003 fine particular sensor.

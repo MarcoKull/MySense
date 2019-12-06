@@ -1,7 +1,10 @@
 from core.modules import InputModule
 from core.config_file import ConfigFile
 
-import utime
+try:
+    import time # python
+except:
+    import utime as time # micropython
 
 class DateTime(InputModule):
     """
@@ -15,7 +18,7 @@ class DateTime(InputModule):
         return 0
 
     def get(self):
-        t = utime.localtime() # get time
+        t = time.localtime() # get time
 
         array = bytearray(6)
         array[0] = t[0] - 1970

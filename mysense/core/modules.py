@@ -1,5 +1,11 @@
+from core.log import *
 from core.logger import LogObserver
 from core.config_file import ConfigFile
+
+try:
+    import os
+except:
+    import uos as os
 
 class Module():
     """
@@ -35,7 +41,50 @@ class Module():
     def config(self):
         return self.__conf
 
+    def list_modules(type):
+        modules = []
 
+        # list module directory
+        for i in os.ilistdir("modules/" + type):
+            # skip directories
+            if i[0] == "." or i[0] == "..":
+                continue
+
+            modules.append(i[0])
+
+        return modules
+
+    def load_class(type, name):
+        log_debug("Loading " + type + " module class '" + name + "'.")
+        try:
+            # this magic creates classes from knowing the type and class name only
+            return getattr(__import__('modules.' + type + "." + name + ".module",[], [], [name]), name)
+
+        except Exception as e:
+            log_fatal("Could not load " + type + " module class '" + name + "'.")
+            raise e
+
+    def load_module(type, name):
+        # loading the class
+        klass = Module.load_class(type, name)
+        if klass == None:
+            return None
+
+        log_info("Loading " + type + " module '" + name + "'.")
+        try:
+            # create a class instance
+            return klass()
+
+        except Exception as e:
+            log_fatal("Could not load " + type + " module '" + name + "'.")
+            raise e
+
+    def load_modules(conf, type):
+        modules = []
+        for i in str(conf.get(type)).split(" "):
+            if len(i) != 0:
+                modules.append(Module.load_module(type, i))
+        return modules
 
 class InputModule(Module):
     """

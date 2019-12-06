@@ -4,7 +4,7 @@ import uos
 
 from core.config_file import ConfigFile
 
-PATH_TESTCONFIG="test/test.conf"
+PATH_TESTCONFIG="core/test/test.conf"
 
 def file_exists(path):
     try:

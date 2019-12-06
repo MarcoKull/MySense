@@ -2,7 +2,7 @@ from core.config_file import ConfigFile
 from core.log import *
 from core.modules import Module, StatusModule
 
-from test.test_config import test_config
+from core.test.tests import run_tests
 
 import ubinascii # for base64 conversion
 import uos # for listdir()
@@ -28,10 +28,10 @@ class Core(Module):
             Logger().use_timestamps = self.config().get("log_timestamps")
 
             # load platform module
-            self.__platform = Core.__load_module("platform", self.config().get("platform"))
+            self.__platform = Module.load_module("platform", self.config().get("platform"))
 
             # load status modules
-            self.__status = Core.__load_modules(self.config(), "status")
+            self.__status = Module.load_modules(self.config(), "status")
 
             # set status indicators to booting
             self.__set_status(StatusModule.StatusType.booting)
@@ -41,17 +41,17 @@ class Core(Module):
                 Logger().add(s)
 
             # load input modules
-            self.__input = Core.__load_modules(self.config(), "input")
+            self.__input = Module.load_modules(self.config(), "input")
             if len(self.__input) == 0:
                 log_warning("No input module loaded.")
 
             # load output modules
-            self.__output = Core.__load_modules(self.config(), "output")
+            self.__output = Module.load_modules(self.config(), "output")
             if len(self.__output) == 0:
                 log_warning("No output module loaded.")
 
             # load sleep module
-            self.__sleep = Core.__load_module("sleep", self.config().get("sleep"))
+            self.__sleep = Module.load_module("sleep", self.config().get("sleep"))
 
         except Exception as e:
             self.__fatal(e)
@@ -91,29 +91,7 @@ class Core(Module):
             o.test()
 
     def test():
-        log_info("Running tests.")
-
-        log_info("Running config file test.")
-        test_config()
-
-        # load all module classes to check for import and syntax errors
-        for i in ("platform", "input", "output", "sleep"):
-            log_info("Test loading " + i + " module classes.")
-            for j in Core.__list_modules(i):
-                Core.__load_class(i, j)
-
-        # check if input device id's are unique
-        log_info("Testing for unique input module ids.")
-        ids = []
-        for i in range(0, 256):
-            ids.append("")
-
-        for i in Core.__list_modules("input"):
-            klass = Core.__load_class("input", i)
-            if len(ids[klass.get_id()]) == 0:
-                ids[klass.get_id()] = i
-            else:
-                raise Exception("Id " + str(klass.get_id()) + " should be unique but is used by input modules '" + ids[klass.get_id()] + "' and '" + i + "'.")
+        run_tests()
 
     def run(self):
         try:
@@ -227,19 +205,6 @@ class Core(Module):
         for s in self.__status:
             s.status(status)
 
-    def __list_modules(type):
-        modules = []
-
-        # list module directory
-        for i in uos.ilistdir("modules/" + type):
-            # skip directories
-            if i[0] == "." or i[0] == "..":
-                continue
-
-            modules.append(i[0])
-
-        return modules
-
     def default_config():
         # create core config
         Module.create_config(Core.get_config_definition())
@@ -247,10 +212,10 @@ class Core(Module):
         # iterate over module types
         for i in ("input", "output", "platform", "sleep", "status"):
             # list module folder
-            for j in Core.__list_modules(i):
+            for j in Module.list_modules(i):
 
                 # load module class
-                klass = Core.__load_class(i, j)
+                klass = Module.load_class(i, j)
 
                 # skip unloadable classes
                 if klass == None:
@@ -266,44 +231,12 @@ class Core(Module):
                 # create configuration file
                 Module.create_config(cd)
 
-    def __load_class(type, name):
-        log_debug("Loading " + type + " module class '" + name + "'.")
-        try:
-            # this magic creates classes from knowing the type and class name only
-            return getattr(__import__('modules.' + type + "." + name + ".module",[], [], [name]), name)
-
-        except Exception as e:
-            log_fatal("Could not load " + type + " module class '" + name + "'.")
-            raise e
-
-    def __load_module(type, name):
-        # loading the class
-        klass = Core.__load_class(type, name)
-        if klass == None:
-            return None
-
-        log_info("Loading " + type + " module '" + name + "'.")
-        try:
-            # create a class instance
-            return klass()
-
-        except Exception as e:
-            log_fatal("Could not load " + type + " module '" + name + "'.")
-            raise e
-
-    def __load_modules(conf, type):
-        modules = []
-        for i in str(conf.get(type)).split(" "):
-            if len(i) != 0:
-                modules.append(Core.__load_module(type, i))
-        return modules
-
     def __decode(array):
         # create an array of all the input modules
         modules = [None] * 256
 
-        for i in Core.__list_modules("input"):
-            klass = Core.__load_class("input", i)
+        for i in Module.list_modules("input"):
+            klass = Module.load_class("input", i)
             if modules[klass.get_id()] != None:
                 Exception("Input module id " + str(klass.get_id()) + " is used by multiple classes, run tests for more information.")
             modules[klass.get_id()] = klass

@@ -297,3 +297,65 @@ class Core(Module):
             if len(i) != 0:
                 modules.append(Core.__load_module(type, i))
         return modules
+
+    def __decode(array):
+        # create an array of all the input modules
+        modules = [None] * 256
+
+        for i in Core.__list_modules("input"):
+            klass = Core.__load_class("input", i)
+            if modules[klass.get_id()] != None:
+                Exception("Input module id " + str(klass.get_id()) + " is used by multiple classes, run tests for more information.")
+            modules[klass.get_id()] = klass
+
+        # first check if we have a valid measurement array by adding together
+        # the lengths and checking if it fits the size
+        l = len(array)
+        if l < 2:
+            raise Exception("invalid measurement string - too small")
+
+        s = 0
+        while s < l:
+            if modules[array[s]] == None:
+                raise Exception("invalid measurement string - unknown input module id")
+
+            if array[s + 1] == 0:
+                raise Exception("invalid measurement string - length cannot be zero")
+            s += array[s + 1]
+
+        if l != s:
+            raise Exception("invalid measurement string - lenght does not add up")
+
+        # decoded string
+        s = ""
+
+        # read counter
+        c = 0
+
+        while c < l:
+            # input module id
+            id = array[c]
+
+            # measurement length
+            ml = array[c + 1]
+
+            # measurement array
+            ma = bytearray(ml)
+            for i in range(0, ml):
+                ma[i] = array[c + 2 + i]
+
+            # set read counter
+            c = c + 2 + ml
+
+            # add to decoded string
+            if len(s) != 0:
+                s += ",\n"
+            s += modules[id].decode(ma)
+
+        return "{\n" + s + "\n}"
+
+    def __decode_base64(str):
+        return Core.__decode(ubinascii.a2b_base64(str))
+
+    def decode(str):
+        return Core.__decode_base64(str)

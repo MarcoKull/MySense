@@ -8,7 +8,7 @@ class HCSR04(InputModule):
 
     def __init__(self):
         super(HCSR04, self).__init__()
-        from drivers.hcsr04 import HCSR04 as HCSR04_drv
+        from modules.input.HCSR04.dep.hcsr04 import HCSR04 as HCSR04_drv
         self.sensor = HCSR04_drv(self.config().get("pin_echo"), self.config().get("pin_trigger"))
 
     def get_id():

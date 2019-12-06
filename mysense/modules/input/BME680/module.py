@@ -8,7 +8,7 @@ class BME680(InputModule):
 
     def __init__(self):
         super(BME680, self).__init__()
-        from drivers.bme680 import BME680 as BME680_drv
+        from modules.input.BME680.dep.bme680 import BME680 as BME680_drv
         self.sensor = BME680_drv(self.config().get("pin_sda"), self.config().get("pin_scl"))
 
     def get_id():

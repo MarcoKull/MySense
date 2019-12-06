@@ -8,7 +8,7 @@ class MB7092(InputModule):
 
     def __init__(self):
         super(MB7092, self).__init__()
-        from drivers.mb7092 import MB7092 as MB7092_drv
+        from modules.input.MB7092.dep.mb7092 import MB7092 as MB7092_drv
         self.sensor = MB7092_drv(self.config().get("pin_tx"), self.config().get("pin_am"))
 
     def get_id():

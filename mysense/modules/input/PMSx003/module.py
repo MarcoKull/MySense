@@ -12,7 +12,7 @@ class PMSx003(InputModule, UART_Device):
     def __init__(self):
         InputModule.__init__(self)
         UART_Device.__init__(self, "PMSx003")
-        from drivers.pmsx003 import PMSx003 as PMSx003_drv
+        from modules.input.PMSx003.dep.pmsx003 import PMSx003 as PMSx003_drv
         self.sensor = PMSx003_drv(port=self.uart_port(), pins=("P" + str(self.config().get("pin_rx")), "P" + str(self.config().get("pin_tx"))))
 
     def get_id():

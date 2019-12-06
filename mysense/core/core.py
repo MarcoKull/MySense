@@ -236,7 +236,7 @@ class Core(Module):
             if i[0] == "." or i[0] == "..":
                 continue
 
-            modules.append(i[0][:-3])
+            modules.append(i[0])
 
         return modules
 
@@ -270,7 +270,7 @@ class Core(Module):
         log_debug("Loading " + type + " module class '" + name + "'.")
         try:
             # this magic creates classes from knowing the type and class name only
-            return getattr(__import__('modules.' + type + "." + name,[], [], [name]), name)
+            return getattr(__import__('modules.' + type + "." + name + ".module",[], [], [name]), name)
 
         except Exception as e:
             log_fatal("Could not load " + type + " module class '" + name + "'.")

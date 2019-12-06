@@ -6,7 +6,7 @@ class StatusLED(StatusModule):
     """
 
     def __init__(self):
-        from drivers.lopy4_led import LoPy4LED
+        from modules.status.StatusLED.dep.lopy4_led import LoPy4LED
         self.led = LoPy4LED()
 
     def status(self, type):

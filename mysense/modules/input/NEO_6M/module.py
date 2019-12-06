@@ -11,7 +11,7 @@ class NEO_6M(InputModule, UART_Device):
         InputModule.__init__(self)
         UART_Device.__init__(self, "NEO-6M")
 
-        from drivers.gps_dexter import GROVEGPS
+        from modules.input.NEO_6M.dep.gps_dexter import GROVEGPS
         self.sensor = GROVEGPS(port=self.uart_port(), pins=("P" + str(self.config().get("pin_rx")), "P" + str(self.config().get("pin_tx"))))
 
     def get_id():

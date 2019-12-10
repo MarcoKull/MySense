@@ -2,9 +2,6 @@ from core.modules import SleepModule
 from core.config_file import ConfigFile
 from core.log import *
 from core.devices import I2C_Device
-from modules.sleep.DS3231.dep.rtc_ds3231 import RTC_DS3231
-from machine import Pin
-import machine
 
 class DS3231(SleepModule, I2C_Device):
     """
@@ -12,6 +9,7 @@ class DS3231(SleepModule, I2C_Device):
     """
 
     def __init__(self):
+        from modules.sleep.DS3231.dep.rtc_ds3231 import RTC_DS3231
         SleepModule.__init__(self)
         I2C_Device.__init__(self, "RTC-DS3231", RTC_DS3231.I2C_ADDR, self.config().get("pin_sda"), self.config().get("pin_scl"))
         self.rtc = RTC_DS3231(self.i2c)
@@ -59,9 +57,11 @@ class DS3231(SleepModule, I2C_Device):
         self.rtc.interrupt_enabled = True
 
         # Define wakup pin
+        from machine import Pin
         p = Pin('P' + str(self.config().get("pin_wake")), mode=Pin.IN)
 
         # Define Sleep Wakeup
+        import machine
         #machine.pin_deepsleep_wakeup([p], machine.WAKEUP_ALL_LOW, True)   # on older firmware
         machine.pin_sleep_wakeup([p], machine.WAKEUP_ALL_LOW, True)       # on newer firmware
 

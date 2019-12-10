@@ -15,11 +15,19 @@ class K33ELG(InputModule):
         return 6
 
     def get(self):
-        return InputModule.uint16_to_bytearray(self.__sensor.get_value())
+        return InputModule.concat_bytearrays(
+            (
+                InputModule.uint16_to_bytearray((self.__sensor.get_temperature() + 100) * 100),
+                InputModule.uint16_to_bytearray(self.__sensor.get_humidity() * 100),
+                InputModule.uint16_to_bytearray(self.__sensor.get_co2())
+            )
+        )
 
     def decode(array):
         s = "\t\"KG33ELG\":\n\t{\n"
-        s += "\t\t\"co2\": " + str(InputModule.bytearray_to_uint16(array, 0)) + "\n"
+        s += "\t\t\"temperature\": " + str(InputModule.bytearray_to_uint16(array, 0) / 100 - 100) + "\n"
+        s += "\t\t\"humidity\": " + str(InputModule.bytearray_to_uint16(array, 2) / 100) + "\n"
+        s += "\t\t\"co2\": " + str(InputModule.bytearray_to_uint16(array, 4)) + "\n"
         s += "\t}"
         return s
 

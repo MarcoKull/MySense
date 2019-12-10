@@ -25,6 +25,10 @@ class I2C_Device(object):
         if address not in self.i2c.scan():
             raise Exception("Device '" + name + "' not found on I2C bus " + str(I2C_Device.__counter) + " with pins sda " + str(pin_sda) + " and scl " + str(pin_scl) + ".")
 
+    def read(self, size):
+        buf = bytearray(size)
+        self.readinto(buf)
+        return buf
 
     def readinto(self, buf, **kwargs):
         """

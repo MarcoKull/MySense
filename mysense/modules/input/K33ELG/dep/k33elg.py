@@ -61,8 +61,8 @@ class K33ELG(I2C_Device):
         time.sleep_ms(1)
 
     def __measure(self):
-        # only measure every ten seconds
-        if time.ticks_ms() - self.__last > 10000:
+        # only measure once a second
+        if time.ticks_ms() - self.__last > 1000:
             tries = 5
             for t in range(0, tries):
                 try:

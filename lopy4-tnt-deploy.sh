@@ -56,7 +56,7 @@ echo
 read -p "Enter a name for the devices: " dev_name
 echo
 
-count=0
+count=1
 function add_devices() {
   if [ $(yesno "Do you want to add a device?") == "1" ]; then
     echo -e "\nGetting device eui..."

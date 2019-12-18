@@ -18,6 +18,7 @@ decode:
 	@read -p "Enter measurement string: " m; cd mysense; ${PYTHON} -c "import MySense; print(MySense.decode(\"$${m}\"))"
 
 default_config:
+	mkdir -p mysense/config
 	$(call myrun,default_config)
 
 run:

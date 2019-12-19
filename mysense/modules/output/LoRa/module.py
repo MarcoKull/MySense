@@ -49,7 +49,7 @@ class LoRa(OutputModule):
         self.socket = socket.socket(socket.AF_LORA, socket.SOCK_RAW)
 
         # set the LoRaWAN data rate
-        self.socket.setsockopt(socket.SOL_LORA, socket.SO_DR, 5)
+        self.socket.setsockopt(socket.SOL_LORA, socket.SO_DR, self.config().get("data_rate"))
 
 
     def send(self, binary, base64, json, json_base64):
@@ -84,6 +84,7 @@ class LoRa(OutputModule):
                 ("antenna_connected", "false", "This variable is for safety reasons to ensure a antenna is connected before LoRa is initialzed.\nWARNING: Setting this to true without an actual antenna connected can destroy your device!", ConfigFile.VariableType.bool),
                 #("region", "EU868", "Pick the region that matches where you are using the device:\n\tAsia = 'AS923'\n\tAustralia = 'AU915'\n\tEurope = 'EU868'\n\tUnited States = 'US915'", ConfigFile.VariableType.string),
                 ("app_eui", "UNSET", "app eui", ConfigFile.VariableType.string),
-                ("app_key", "UNSET", "app key", ConfigFile.VariableType.string)
+                ("app_key", "UNSET", "app key", ConfigFile.VariableType.string),
+                ("data_rate", "5", "LoRa data rate. Use a value between 0 and 5.", ConfigFile.VariableType.uint),
             )
         )

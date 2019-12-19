@@ -36,7 +36,7 @@ class LoRa(OutputModule):
             app_key = ubinascii.unhexlify(self.config().get("app_key"))
 
             # join a network using OTAA (Over the Air Activation)
-            self.lora.join(activation=LoRa_drv.OTAA, auth=(app_eui, app_key), timeout=0)
+            self.lora.join(activation=LoRa_drv.OTAA, auth=(app_eui, app_key), timeout=0, dr=self.config().get("data_rate"))
 
             # wait until the module has joined the network
             log_debug("Waiting until LoRa has joined.")

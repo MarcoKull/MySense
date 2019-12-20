@@ -20,7 +20,7 @@ class LoRa(OutputModule):
 
         # initialize lora network
         from network import LoRa as LoRa_drv
-        self.lora = LoRa_drv(mode=LoRa_drv.LORAWAN, region=LoRa_drv.EU868)
+        self.lora = LoRa_drv(mode=LoRa_drv.LORAWAN, region=LoRa_drv.EU868, adr=self.config().get("adr"))
 
         # try to load previous lora connection if waking up from deep sleep
         if reset_cause == machine.DEEPSLEEP_RESET:
@@ -86,5 +86,6 @@ class LoRa(OutputModule):
                 ("app_eui", "UNSET", "app eui", ConfigFile.VariableType.string),
                 ("app_key", "UNSET", "app key", ConfigFile.VariableType.string),
                 ("data_rate", "5", "LoRa data rate. Use a value between 0 and 5.", ConfigFile.VariableType.uint),
+                ("adr", "false", "Enables LoRa adaptive data rate.", ConfigFile.VariableType.bool)
             )
         )

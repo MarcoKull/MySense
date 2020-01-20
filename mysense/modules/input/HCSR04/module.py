@@ -19,7 +19,7 @@ class HCSR04(InputModule):
 
     def decode(array):
         s = "\t\"HCSR04\":\n\t{\n"
-        s += "\t\t\"distance_cm\": " + str(bytearray_to_uint16(array, 0)) + "\n\t}"
+        s += "\t\t\"distance_cm\": " + str(InputModule.bytearray_to_uint16(array, 0)) + "\n\t}"
         return s
 
     def test(self):

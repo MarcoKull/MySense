@@ -20,6 +20,16 @@ class NEO_6M(InputModule, UART_Device):
     def get(self):
         data = self.sensor.MyGPS()
 
+        # no gps
+        if data == None:
+            return InputModule.concat_bytearrays(
+                (
+                    InputModule.uint32_to_bytearray(0),
+                    InputModule.uint32_to_bytearray(0),
+                    InputModule.uint16_to_bytearray(0)
+                )
+            )
+
         return InputModule.concat_bytearrays(
             (
                 InputModule.uint32_to_bytearray(data[0] * 10000),

@@ -26,8 +26,6 @@ class I2C_Device(object):
             raise Exception("Device '" + name + "' not found on I2C bus " + str(I2C_Device.__counter - 1) + " with pins sda " + str(pin_sda) + " and scl " + str(pin_scl) + ".")
 
     def read(self, size):
-        #self.i2c.readfrom_mem(self.address, reg, 1)
-
         buf = bytearray(size)
         self.readinto(buf)
         return buf

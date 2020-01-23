@@ -15,11 +15,8 @@ class I2C_Device(object):
         log_debug("Initializing device '" + name + "' on I2C bus " + str(I2C_Device.__counter) + " with pins sda " + str(pin_sda) + " and scl " + str(pin_scl) + ".")
 
         # create i2c bus
-        self.i2c = I2C(I2C_Device.__counter)
+        self.i2c = I2C(I2C_Device.__counter, pins=(Pin("P" + str(pin_sda)),Pin("P" + str(pin_scl))))
         I2C_Device.__counter += 1
-
-        # initialize i2c bus
-        self.i2c.init(I2C.MASTER, pins=(Pin("P" + str(pin_sda)),Pin("P" + str(pin_scl))))
 
         # scan for device
         if address not in self.i2c.scan():

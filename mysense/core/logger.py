@@ -23,7 +23,7 @@ class Logger():
             Logger.__instance = object.__new__(cls)
 
             # create list of observers
-            Logger.__instance.__observers = [LogPrinter()]
+            Logger.__instance.__observers = [LogPrinter(), NVSLogger()]
             Logger.__instance.__lvl = LogLevel.info
 
         return Logger.__instance
@@ -142,3 +142,18 @@ class LogPrinter(LogObserver):
         self.__timestamps = bool
 
     use_timestamps = property(get_use_timestamps, set_use_timestamps)
+
+
+class NVSLogger(LogObserver):
+    """
+    Prints log messages with optional timestamps.
+    """
+    def __init__(self):
+        super(NVSLogger, self).__init__()
+
+    def log(self, level, message):
+        if level > 1:
+            return
+
+        import pycom
+        pycom.nvs_set("elog", message)

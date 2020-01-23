@@ -53,25 +53,29 @@ class LoRa(OutputModule):
 
 
     def send(self, binary, base64, json, json_base64):
-        # make the socket blocking
-        # (waits for the data to be sent and for the 2 receive windows to expire)
-        self.socket.setblocking(True)
+        try:
+            # make the socket blocking
+            # (waits for the data to be sent and for the 2 receive windows to expire)
+            self.socket.setblocking(True)
 
-        # send some data
-        #s.send(bytes([0x01, 0x02, 0x03]))
-        self.socket.send(binary)
+            # send some data
+            #s.send(bytes([0x01, 0x02, 0x03]))
+            self.socket.send(binary)
 
-        # make the socket non-blocking
-        # (because if there's no data received it will block forever...)
-        self.socket.setblocking(False)
+            # make the socket non-blocking
+            # (because if there's no data received it will block forever...)
+            self.socket.setblocking(False)
 
-        # get any data received (if any...)
-        data = self.socket.recv(64)
+            # get any data received (if any...)
+            data = self.socket.recv(64)
 
-        # TODO activate ota mode
+            # TODO activate ota mode
 
-        # save lora connection
-        self.lora.nvram_save()
+            # save lora connection
+            self.lora.nvram_save()
+
+        except:
+            log_error("LoRa send failed!")
 
     def test(self):
         pass

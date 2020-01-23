@@ -46,7 +46,7 @@ class GROVEGPS:
     self.debug = debug
     self.date = 0
     self.max_wait = 3
-    self.max_retry = 50  # wait for fix was 50
+    self.max_retry = 3  # wait for fix was 50
 
     # compile regex once to use later
     for i in range(len(patterns)-1):
@@ -206,7 +206,7 @@ class GROVEGPS:
       if self.quality > 0: break
     if self.quality < 1:
       return None
-    self.UpdateRTC()
+    #self.UpdateRTC()
     # 4 decimals: resolution of ~ 11 meter
     #return {
     #  'date': self.date,

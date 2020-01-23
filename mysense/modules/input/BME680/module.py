@@ -42,7 +42,7 @@ class BME680(InputModule):
         return s
 
     def test(self):
-        self.get()
+        pass
 
     def get_config_definition():
         return (

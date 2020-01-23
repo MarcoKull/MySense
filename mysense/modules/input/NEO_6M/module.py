@@ -47,7 +47,7 @@ class NEO_6M(InputModule, UART_Device):
         return s
 
     def test(self):
-        self.get()
+        pass
 
     def get_config_definition():
         return (

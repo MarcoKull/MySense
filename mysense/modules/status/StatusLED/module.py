@@ -35,7 +35,7 @@ class StatusLED(StatusModule):
     def log(self, level, message):
         pass
 
-    def measurement(self, json):
+    def measurement(self, bytearray, json):
         pass
 
     def test(self):

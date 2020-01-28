@@ -27,7 +27,7 @@ class Print(StatusModule):
     def test(self):
         pass
 
-    def measurement(self, json):
+    def measurement(self, bytearray, json):
         pass
 
     def get_config_definition():

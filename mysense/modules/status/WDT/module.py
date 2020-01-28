@@ -23,7 +23,7 @@ class WDT(StatusModule):
     def test(self):
         self.feed()
 
-    def measurement(self, json):
+    def measurement(self, bytearray, json):
         self.feed()
 
     def get_config_definition():

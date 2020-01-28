@@ -185,7 +185,7 @@ class Core(Module):
 
                     # set outputs on status modules
                     for s in self.__status:
-                        s.measurement(json)
+                        s.measurement(binary, json)
 
                     # send data
                     self.__set_status(StatusModule.StatusType.sending)

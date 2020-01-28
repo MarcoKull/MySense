@@ -17,24 +17,29 @@ class PMSx003(InputModule, UART_Device):
         return 4
 
     def get(self):
-        data = self.sensor.getData()
-
-        return InputModule.concat_bytearrays(
-            (
-                InputModule.uint16_to_bytearray(data["pm1_par1"] * 100),
-                InputModule.uint16_to_bytearray(data["pm25_par2"] * 100),
-                InputModule.uint16_to_bytearray(data["pm10_par3"] * 100),
-                InputModule.uint16_to_bytearray(data["pm1"] * 100),
-                InputModule.uint16_to_bytearray(data["pm25"] * 100),
-                InputModule.uint16_to_bytearray(data["pm10"] * 100),
-                InputModule.uint16_to_bytearray(data["pm05_cnt"] * 100),
-                InputModule.uint16_to_bytearray(data["pm1_cnt"] * 100),
-                InputModule.uint16_to_bytearray(data["pm25_cnt"] * 100),
-                InputModule.uint16_to_bytearray(data["pm5_cnt"] * 100),
-                InputModule.uint16_to_bytearray(data["pm10_cnt"] * 100),
-                InputModule.uint16_to_bytearray(data["grain"] * 100)
+        try:
+            data = self.sensor.getData()
+            return InputModule.concat_bytearrays(
+                (
+                    InputModule.uint16_to_bytearray(data["pm1_par1"] * 100),
+                    InputModule.uint16_to_bytearray(data["pm25_par2"] * 100),
+                    InputModule.uint16_to_bytearray(data["pm10_par3"] * 100),
+                    InputModule.uint16_to_bytearray(data["pm1"] * 100),
+                    InputModule.uint16_to_bytearray(data["pm25"] * 100),
+                    InputModule.uint16_to_bytearray(data["pm10"] * 100),
+                    InputModule.uint16_to_bytearray(data["pm05_cnt"] * 100),
+                    InputModule.uint16_to_bytearray(data["pm1_cnt"] * 100),
+                    InputModule.uint16_to_bytearray(data["pm25_cnt"] * 100),
+                    InputModule.uint16_to_bytearray(data["pm5_cnt"] * 100),
+                    InputModule.uint16_to_bytearray(data["pm10_cnt"] * 100),
+                    InputModule.uint16_to_bytearray(data["grain"] * 100)
+                )
             )
-        )
+        except:
+            b = bytearray(24)
+            for i in range(0, len(b)):
+                b[i] = 0
+            return b
 
     def decode(array):
         s = "\t\"PMSx003\":\n\t{\n"

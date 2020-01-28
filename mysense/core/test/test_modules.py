@@ -3,7 +3,7 @@ from core.modules import Module
 
 def test_modules():
     # load all module classes to check for import and syntax errors
-    for i in ("platform", "input", "output", "sleep"):
+    for i in ("platform", "input", "output", "sleep", "status"):
         log_info("Test loading " + i + " module classes.")
         for j in Module.list_modules(i):
             Module.load_class(i, j)

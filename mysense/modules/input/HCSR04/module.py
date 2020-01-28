@@ -9,7 +9,7 @@ class HCSR04(InputModule):
     def __init__(self):
         super(HCSR04, self).__init__()
         from modules.input.HCSR04.dep.hcsr04 import HCSR04 as HCSR04_drv
-        self.sensor = HCSR04_drv(self.config().get("pin_echo"), self.config().get("pin_trigger"))
+        self.sensor = HCSR04_drv(self.config().get("pin_echo"), self.config().get("pin_trigger"), self.config().get("samples"))
 
     def get_id():
         return 1
@@ -28,9 +28,10 @@ class HCSR04(InputModule):
     def get_config_definition():
         return (
             "input_hcsr04",
-            "distance hcsr04",
+            "Adds support for the HCSR04 distance sensor.",
             (
                 ("pin_echo", "20", "Defines the echo pin.", ConfigFile.VariableType.uint),
                 ("pin_trigger", "21", "Defines the trigger pin.", ConfigFile.VariableType.uint),
+                ("samples", "20", "Defines how many samples should be taken.", ConfigFile.VariableType.uint),
             )
         )

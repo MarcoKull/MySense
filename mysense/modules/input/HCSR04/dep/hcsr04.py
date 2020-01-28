@@ -10,9 +10,10 @@ class HCSR04():
     and https://github.com/andrey-git/micropython-hcsr04/blob/master/hcsr04.py
     """
 
-    def __init__(self, pin_echo, pin_trigger):
+    def __init__(self, pin_echo, pin_trigger, samples):
         self.echo = Pin('P' + str(pin_echo), mode=Pin.IN)
         self.trigger = Pin('P' + str(pin_trigger), mode=Pin.OUT)
+        self.__samples = samples
         self.trigger(0)
 
     def __measure_once(self):
@@ -28,7 +29,7 @@ class HCSR04():
         # wait for the rising edge of the echo then start timer
         start = utime.ticks_us()
         while self.echo() == 0:
-            if utime.ticks_us() - start > 1000000:
+            if utime.ticks_us() - start > 2000000:
                 raise Exception("Timeout starting HCSR04 distance sensor.")
             pass
         start = utime.ticks_us()
@@ -59,7 +60,7 @@ class HCSR04():
     def measure(self):
         samples = []
 
-        for j in range(10):
+        for j in range(self.__samples):
             samples.append(self.__measure_once())
 
         return self.__median(samples)

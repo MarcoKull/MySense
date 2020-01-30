@@ -47,7 +47,7 @@ class LoPy4(PlatformModule):
             if bat < 10.6:
                 log_warning("Battery voltage too low.")
                 import machine
-                machine.deepsleep(890)
+                machine.deepsleep(890000)
 
     def is_run_tests(self):
         # only run test if not woke up from deep sleep

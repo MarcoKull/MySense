@@ -29,6 +29,8 @@ class DS3231(SleepModule, I2C_Device):
         )
 
     def sleep(self):
+        from modules.sleep.DS3231.dep.rtc_ds3231 import RTC_DS3231
+        
         # set time to zero
         self.rtc.time_year = 1970
         self.rtc.time_month = 1

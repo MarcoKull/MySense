@@ -29,7 +29,7 @@ class HCSR04():
         # wait for the rising edge of the echo then start timer
         start = utime.ticks_us()
         while self.echo() == 0:
-            if utime.ticks_us() - start > 2000000:
+            if utime.ticks_us() - start > 1000000:
                 raise Exception("Timeout starting HCSR04 distance sensor.")
             pass
         start = utime.ticks_us()
@@ -61,7 +61,10 @@ class HCSR04():
         samples = []
 
         for j in range(self.__samples):
-            samples.append(self.__measure_once())
+            try:
+                samples.append(self.__measure_once())
+            except:
+                samples.append(self.__measure_once())
 
         return self.__median(samples)
 

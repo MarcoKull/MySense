@@ -198,8 +198,8 @@ class StatusModule(Module, LogObserver):
     def status(self, type):
         raise NotImplementedError("The status(type) method has to implemented by a StatusModule child class.")
 
-    def measurement(self, bytearray, json):
-        raise NotImplementedError("The measurement(bytearray, json) method has to implemented by a StatusModule child class.")
+    def measurement(self, array, json):
+        raise NotImplementedError("The measurement(array, json) method has to implemented by a StatusModule child class.")
 
     class StatusType():
         error = "error"

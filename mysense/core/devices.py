@@ -6,21 +6,22 @@ class I2C_Device(object):
     """
 
     __counter = 0
+    __busses = dict()
 
     def __init__(self, name, address, pin_sda, pin_scl):
         from machine import I2C, Pin
 
         self.address = address
 
-        log_debug("Initializing device '" + name + "' on I2C bus " + str(I2C_Device.__counter) + " with pins sda " + str(pin_sda) + " and scl " + str(pin_scl) + ".")
+        if (pin_sda, pin_scl) not in I2C_Device.__busses.keys():
+            log_debug("Initializing I2C bus " + str(I2C_Device.__counter) + " with pins sda " + str(pin_sda) + " and scl " + str(pin_scl) + ".")
+            I2C_Device.__busses[(pin_sda, pin_scl)] = (I2C_Device.__counter, I2C(I2C_Device.__counter, pins=(Pin("P" + str(pin_sda)),Pin("P" + str(pin_scl)))))
+            I2C_Device.__counter += 1
 
         # create i2c bus
-        self.i2c = I2C(I2C_Device.__counter, pins=(Pin("P" + str(pin_sda)),Pin("P" + str(pin_scl))))
-        I2C_Device.__counter += 1
-
-        # scan for device
-        if address not in self.i2c.scan():
-            raise Exception("Device '" + name + "' not found on I2C bus " + str(I2C_Device.__counter - 1) + " with pins sda " + str(pin_sda) + " and scl " + str(pin_scl) + ".")
+        i2cbus = I2C_Device.__busses[(pin_sda, pin_scl)]
+        log_debug("Initializing device '" + name + "' on I2C bus " + str(i2cbus[0]) + ".")
+        self.i2c = i2cbus[1]
 
     def read(self, size):
         buf = bytearray(size)

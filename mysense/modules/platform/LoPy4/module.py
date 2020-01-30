@@ -44,7 +44,7 @@ class LoPy4(PlatformModule):
         # check for sufficiant power
         bat = LoPy4Battery(17).voltage()
         if bat > 5:
-            if bat < 10.6:
+            if bat < 10.4:
                 log_warning("Battery voltage too low.")
                 import machine
                 machine.deepsleep(890000)

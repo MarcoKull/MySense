@@ -2,6 +2,25 @@ from core.config_file import ConfigFile
 from core.modules import PlatformModule
 from core.log import *
 
+class LoPy4Battery():
+    def __init__(self, pin):
+        from machine import ADC
+        adc = ADC()
+        self.bat = adc.channel(pin="P" + str(pin), attn=ADC.ATTN_11DB)
+
+    def __voltage(self):
+        return self.bat.value() *  0.003970714
+
+    def voltage(self):
+        # get 10 samples
+        values = []
+        for i in range(0, 10):
+            values.append(self.__voltage())
+        values.sort()
+
+        # take the median
+        return values[int(len(values) / 2)]
+
 class LoPy4(PlatformModule):
     """
     This class wrapps the generic LoPy4 features.
@@ -21,6 +40,14 @@ class LoPy4(PlatformModule):
         # set wifi access point
         import pycom
         pycom.wifi_on_boot(self.config().get("wifi_on_boot"))
+
+        # check for sufficiant power
+        bat = LoPy4Battery(17).voltage()
+        if bat > 5:
+            if bat < 10.6:
+                log_warning("Battery voltage too low.")
+                import machine
+                machine.deepsleep(890)
 
     def is_run_tests(self):
         # only run test if not woke up from deep sleep

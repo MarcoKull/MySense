@@ -1,5 +1,5 @@
 # MySense
-This program is a measurement system for IoT devices based on the LoPy4 Microcontroller written in Micropython. It was created during a internship at the GreenTechLab at Fontys Venlo, inspired by and making use of the original MySense software developed by Theus Hagen.
+This program is a measurement system for IoT devices based on the LoPy4 Microcontroller written in Micropython. It was created during a internship at the GreenTechLab at Fontys Venlo, inspired by and making use of the original MySense software developed by Teus Hagen.
 
 ## Supported Devices
 - BME680 Temperature/Humidity/Airquality Sensor

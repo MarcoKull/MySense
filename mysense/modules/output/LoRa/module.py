@@ -1,5 +1,5 @@
 # This file is part of the MySense software (https://github.com/MarcoKull/MySense).
-# Copyright (c) 2020 Marco Kull
+# Copyright (c) 2020 Marco Kull, Jelle Adema
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as
@@ -67,8 +67,35 @@ class LoRa(OutputModule):
         # set the LoRaWAN data rate
         self.socket.setsockopt(socket.SOL_LORA, socket.SO_DR, self.config().get("data_rate"))
 
+        # timer variable for measuring time between send commands
+        self.chrono = None
+
+
 
     def send(self, binary, base64, json, json_base64):
+        # check minimum time between messages
+        min = self.config().get("minimum_time")
+        if min != 0:
+            # first send call
+            if self.chrono == None:
+                log_debug("Starting LoRa sending timer.")
+
+                # Import timer
+                from machine import Timer
+                import time
+
+                self.chrono = Timer.Chrono()
+
+                #Start timer
+                self.chrono.start()
+
+            else:
+                if self.chrono.read() > min:
+                    self.chrono.reset()
+                else:
+                    log_debug("Minimal time between LoRa sending not reached, skipping.")
+                    return
+
         try:
             # make the socket blocking
             # (waits for the data to be sent and for the 2 receive windows to expire)
@@ -106,6 +133,7 @@ class LoRa(OutputModule):
                 ("app_eui", "UNSET", "app eui", ConfigFile.VariableType.string),
                 ("app_key", "UNSET", "app key", ConfigFile.VariableType.string),
                 ("data_rate", "5", "LoRa data rate. Use a value between 0 and 5.", ConfigFile.VariableType.uint),
-                ("adr", "false", "Enables LoRa adaptive data rate.", ConfigFile.VariableType.bool)
+                ("adr", "false", "Enables LoRa adaptive data rate.", ConfigFile.VariableType.bool),
+                ("minimum_time", "0", "Set minimum time between LoRa messages in seconds", ConfigFile.VariableType.uint)
             )
         )

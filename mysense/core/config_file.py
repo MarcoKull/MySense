@@ -130,7 +130,7 @@ class ConfigFile():
             if state == 0:
 
                 # skip whitespaces
-                if c == " " or c == "\t" or c == "\n":
+                if c == " " or c == "\t" or c == "\n" or c == "\r":
                     continue
 
                 # detect comment
@@ -203,7 +203,7 @@ class ConfigFile():
             elif state == 5:
 
                 # skip whitespaces
-                if c == " " or c == "\t" or c == "\n":
+                if c == " " or c == "\t" or c == "\n" or c == "\r":
                     pass
 
                 # comment

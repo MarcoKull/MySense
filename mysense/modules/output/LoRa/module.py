@@ -99,7 +99,8 @@ class LoRa(OutputModule):
         try:
             # make the socket blocking
             # (waits for the data to be sent and for the 2 receive windows to expire)
-            self.socket.setblocking(True)
+            if self.config().get("blocking"):
+                self.socket.setblocking(True)
 
             # send some data
             #s.send(bytes([0x01, 0x02, 0x03]))
@@ -107,7 +108,8 @@ class LoRa(OutputModule):
 
             # make the socket non-blocking
             # (because if there's no data received it will block forever...)
-            self.socket.setblocking(False)
+            if self.config().get("blocking"):
+                self.socket.setblocking(False)
 
             # get any data received (if any...)
             data = self.socket.recv(64)
@@ -134,6 +136,7 @@ class LoRa(OutputModule):
                 ("app_key", "UNSET", "app key", ConfigFile.VariableType.string),
                 ("data_rate", "5", "LoRa data rate. Use a value between 0 and 5.", ConfigFile.VariableType.uint),
                 ("adr", "false", "Enables LoRa adaptive data rate.", ConfigFile.VariableType.bool),
+                ("blocking", "true", "Wait for data to be sent before continuing.", ConfigFile.VariableType.bool),
                 ("minimum_time", "0", "Set minimum time between LoRa messages in seconds", ConfigFile.VariableType.uint)
             )
         )

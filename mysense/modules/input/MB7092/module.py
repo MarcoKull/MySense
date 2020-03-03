@@ -25,7 +25,7 @@ class MB7092(InputModule):
     def __init__(self):
         super(MB7092, self).__init__()
         from modules.input.MB7092.dep.mb7092 import MB7092 as MB7092_drv
-        self.sensor = MB7092_drv(self.config().get("pin_tx"), self.config().get("pin_am"))
+        self.sensor = MB7092_drv(self.config().get("pin_tx"), self.config().get("pin_am"), self.config().get("samples"))
 
     def get_id():
         return 2
@@ -48,5 +48,6 @@ class MB7092(InputModule):
             (
                 ("pin_tx", "20", "Defines the tx pin (pin 4).", ConfigFile.VariableType.uint),
                 ("pin_am", "16", "Defines the am pin (pin 3).", ConfigFile.VariableType.uint),
+                ("samples", "20", "Defines how many samples should be taken.", ConfigFile.VariableType.uint),
             )
         )

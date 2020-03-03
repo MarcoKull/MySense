@@ -21,13 +21,13 @@ import utime
 class MB7092():
     """Driver for the MaxSonar MB7092 distance sensor."""
 
-    def __init__(self, pin_rx, pin_am):
+    def __init__(self, pin_rx, pin_am, samples):
         super(MB7092, self).__init__()
 
         # pin to enable/disable measurement
         self.rx = Pin('P' + str(pin_rx), mode=Pin.OUT)
         self.rx(1)
-
+        self.__samples = samples
         # setting up the Analog/Digital Converter with 10 bits
         adc = ADC()
 
@@ -35,7 +35,16 @@ class MB7092():
         self.am = adc.channel(pin='P' + str(pin_am))
 
     def measure(self):
-        # turn on measuring
+        samples = []
+    	for j in range(self.__samples):
+            try:
+                samples.append(self.__measure_once())
+            except:
+                samples.append(self.__measure_once())
+
+        return self.__median(samples)
+
+    def __measure_once(self):
         self.rx(1)
 
         # wait for sensor to settle
@@ -48,3 +57,7 @@ class MB7092():
         self.rx(0)
 
         return int(d)
+    
+    def __median(self, array):
+        sort = sorted(array)
+        return array[int(len(array)/2)]

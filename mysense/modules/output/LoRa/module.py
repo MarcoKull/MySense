@@ -19,6 +19,8 @@ from core.config_file import ConfigFile
 
 from core.log import *
 
+import time
+
 class LoRa(OutputModule):
     """
     Example of an output module that prints the output to the log.
@@ -37,7 +39,6 @@ class LoRa(OutputModule):
         # initialize lora network
         from network import LoRa as LoRa_drv
         self.lora = LoRa_drv(mode=LoRa_drv.LORAWAN, region=LoRa_drv.EU868, adr=self.config().get("adr"))
-
         # try to load previous lora connection if waking up from deep sleep
         if reset_cause == machine.DEEPSLEEP_RESET:
             self.lora.nvram_restore()
@@ -50,14 +51,15 @@ class LoRa(OutputModule):
             import ubinascii
             app_eui = ubinascii.unhexlify(self.config().get("app_eui"))
             app_key = ubinascii.unhexlify(self.config().get("app_key"))
-
+            
             # join a network using OTAA (Over the Air Activation)
             self.lora.join(activation=LoRa_drv.OTAA, auth=(app_eui, app_key), timeout=0, dr=self.config().get("data_rate"))
 
             # wait until the module has joined the network
             log_debug("Waiting until LoRa has joined.")
             while not self.lora.has_joined():
-                pass
+                time.sleep(2.5)
+                log_debug("Not joined yet.")
             log_info("Joined LoRa network.")
 
         # create a lora socket to send data
@@ -65,7 +67,7 @@ class LoRa(OutputModule):
         self.socket = socket.socket(socket.AF_LORA, socket.SOCK_RAW)
 
         # set the LoRaWAN data rate
-        self.socket.setsockopt(socket.SOL_LORA, socket.SO_DR, self.config().get("data_rate"))
+        #self.socket.setsockopt(socket.SOL_LORA, socket.SO_DR, self.config().get("data_rate"))
 
         # timer variable for measuring time between send commands
         self.chrono = None
@@ -135,7 +137,7 @@ class LoRa(OutputModule):
                 ("app_eui", "UNSET", "app eui", ConfigFile.VariableType.string),
                 ("app_key", "UNSET", "app key", ConfigFile.VariableType.string),
                 ("data_rate", "5", "LoRa data rate. Use a value between 0 and 5.", ConfigFile.VariableType.uint),
-                ("adr", "false", "Enables LoRa adaptive data rate.", ConfigFile.VariableType.bool),
+                ("adr", "False", "Enables LoRa adaptive data rate. True / False", ConfigFile.VariableType.bool),
                 ("blocking", "true", "Wait for data to be sent before continuing.", ConfigFile.VariableType.bool),
                 ("minimum_time", "0", "Set minimum time between LoRa messages in seconds", ConfigFile.VariableType.uint)
             )

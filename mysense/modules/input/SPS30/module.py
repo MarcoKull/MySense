@@ -17,6 +17,7 @@
 from core.modules import InputModule
 from core.config_file import ConfigFile
 from core.devices import UART_Device
+from core.log import *
 
 class SPS30(InputModule, UART_Device):
     """
@@ -35,19 +36,18 @@ class SPS30(InputModule, UART_Device):
     def get(self):
         try:
             data = self.sensor.getData()
-            print(data)
             return InputModule.concat_bytearrays(
                 (
-                    InputModule.uint16_to_bytearray(int(data[0][2]*10)),
-                    InputModule.uint16_to_bytearray(int(data[1][2]*10)),
-                    InputModule.uint16_to_bytearray(int(data[2][2]*10)),
-                    InputModule.uint16_to_bytearray(int(data[3][2]*10)),
-                    InputModule.uint16_to_bytearray(int(data[4][2]*10)),
-                    InputModule.uint16_to_bytearray(int(data[5][2]*10)),
-                    InputModule.uint16_to_bytearray(int(data[6][2]*10)),
-                    InputModule.uint16_to_bytearray(int(data[7][2]*10)),
-                    InputModule.uint16_to_bytearray(int(data[8][2]*10)),
-                    InputModule.uint16_to_bytearray(int(data[9][2]*10))
+                    InputModule.uint16_to_bytearray(data[0][2]*10),
+                    InputModule.uint16_to_bytearray(data[1][2]*10),
+                    InputModule.uint16_to_bytearray(data[2][2]*10),
+                    InputModule.uint16_to_bytearray(data[3][2]*10),
+                    InputModule.uint16_to_bytearray(data[4][2]*10),
+                    InputModule.uint16_to_bytearray(data[5][2]*10),
+                    InputModule.uint16_to_bytearray(data[6][2]*10),
+                    InputModule.uint16_to_bytearray(data[7][2]*10),
+                    InputModule.uint16_to_bytearray(data[8][2]*10),
+                    InputModule.uint16_to_bytearray(data[9][2]*100)
                 )
             )
         except:
@@ -67,7 +67,7 @@ class SPS30(InputModule, UART_Device):
         s += "\t\t\"pm25_cnt\": " + str(InputModule.bytearray_to_uint16(array, 12) / 10) + ",\n"
         s += "\t\t\"pm4_cnt\": " + str(InputModule.bytearray_to_uint16(array, 14) / 10) + ",\n"
         s += "\t\t\"pm10_cnt\": " + str(InputModule.bytearray_to_uint16(array, 16) / 10) + ",\n"
-        s += "\t\t\"typ_par\": " + str(InputModule.bytearray_to_uint16(array, 18) / 10) + ",\n"
+        s += "\t\t\"typ_par\": " + str(InputModule.bytearray_to_uint16(array, 18) / 100) + ",\n"
         s += "\t}"
         return s
 

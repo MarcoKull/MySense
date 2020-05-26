@@ -76,7 +76,7 @@ class UART_Device(object):
     Handles devices that connect to an UART bus.
     """
 
-    __counter = 1
+    __counter = 0
 
     def __init__(self, name):
         self.__port = UART_Device.__counter

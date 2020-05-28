@@ -25,5 +25,9 @@ class LeddarOne():
         signed=False
         register_value = self.modbus_obj.read_input_registers(slave_addr, starting_address, register_quantity, signed)
         print('Input register value: ' + ' '.join('{:d}'.format(x) for x in register_value))
-        print(type(register_value[0]))
+        #print(type(register_value[0]))
+
+        #example of reading other registers
+        #test = self.modbus_obj.read_holding_registers(slave_addr, 1, register_quantity, signed)
+        #print('Holding register value: ' + ' '.join('{:d}'.format(x) for x in test))
         return register_value[0]

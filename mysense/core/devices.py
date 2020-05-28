@@ -76,7 +76,10 @@ class UART_Device(object):
     Handles devices that connect to an UART bus.
     """
 
-    __counter = 0
+    # By default UART0 is used for REPL, so we are starting to count from 1
+    # here for convenience. If you need to use all 3 UART ports change this
+    # to 0, but be aware that you cause conflicts with serial REPL.
+    __counter = 1
 
     def __init__(self, name):
         self.__port = UART_Device.__counter

@@ -1,7 +1,7 @@
 from machine import I2C
 import time
 
-class StevalMKI15X():
+class StevalMKI153():
     def __init__(self, pins=('P9','P10'), baudrate=115200):
         self.i2c = I2C(0, I2C.MASTER, pins=pins)
         self.i2c.init(I2C.MASTER, baudrate=baudrate)
@@ -19,7 +19,6 @@ class StevalMKI15X():
         combined_bits = high_bits + '' + low_bits #concatenate bit values
         result = self.twos_complement(int(combined_bits, 2), len(combined_bits))
         result = result * 0.003 # multiply by 0.003 for +-100g (default value)
-        print(result)
         result = round((result + 40) * 1000)
         result = str(result)
         return result
@@ -52,4 +51,4 @@ class StevalMKI15X():
             high_bits_z = int.from_bytes(buf, 'big', True)
             acceleration_z = self.calculate_measurement(high_bits_z, low_bits_z)
             print("z axis " + str(acceleration_z))
-            return acceleration_x
+            return acceleration_x + acceleration_y + acceleration_z

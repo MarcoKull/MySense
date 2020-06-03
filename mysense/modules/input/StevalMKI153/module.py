@@ -19,7 +19,7 @@ from core.config_file import ConfigFile
 from modules.input.StevalMKI15X.dep.stevalMKI15X import StevalMKI15X as stevalMKI15X_drv
 from core.log import *
 
-class StevalMKI15X(InputModule):
+class StevalMKI153(InputModule):
     """
     A input module for the Bosch BME680 sensor.
     """
@@ -35,16 +35,14 @@ class StevalMKI15X(InputModule):
     def get(self):
         array = bytearray(1)
         result = self.sensor.read_sensor()
-        print(result)
         log_debug(result)
-        #log_info(result)
-        return result
+        #return result
         return InputModule.uint16_to_bytearray(result)
 
     def decode(array):
         #t = InputModule.bytearray_to_uint16(array, 0)
         t = array
-        s = "\t\"LeddarOne\":\n\t{\n"
+        s = "\t\"StevalMKI153\":\n\t{\n"
         s += "\t\t\"Distance\": " + str(t) + ",\n"
         return s
 
@@ -53,7 +51,7 @@ class StevalMKI15X(InputModule):
 
     def get_config_definition():
         return (
-            "input_stevalMKI15X",
+            "input_stevalMKI153",
             "Adds support for the LeddarOne sensor.\nIt measures distance using infrared light.",
             (
                 ("pin_sda", "9", "Defines the sda pin.", ConfigFile.VariableType.uint),

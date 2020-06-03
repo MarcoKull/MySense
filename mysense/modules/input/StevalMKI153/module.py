@@ -16,7 +16,7 @@
 
 from core.modules import InputModule
 from core.config_file import ConfigFile
-from modules.input.StevalMKI15X.dep.stevalMKI15X import StevalMKI15X as stevalMKI15X_drv
+from modules.input.StevalMKI153.dep.stevalMKI153 import StevalMKI153 as stevalMKI153_drv
 from core.log import *
 
 class StevalMKI153(InputModule):
@@ -25,25 +25,32 @@ class StevalMKI153(InputModule):
     """
 
     def __init__(self):
-        super(StevalMKI15X, self).__init__()
+        super(StevalMKI153, self).__init__()
         
-        self.sensor = stevalMKI15X_drv()
+        self.sensor = stevalMKI153_drv()
 
     def get_id():
-        return 23
+        return 24
 
     def get(self):
-        array = bytearray(1)
-        result = self.sensor.read_sensor()
-        log_debug(result)
-        #return result
-        return InputModule.uint16_to_bytearray(result)
+        return InputModule.concat_bytearrays(
+            (
+                InputModule.uint16_to_bytearray(self.sensor.get_x_acceleration()),
+                InputModule.uint16_to_bytearray(self.sensor.get_y_acceleration()),
+                InputModule.uint16_to_bytearray(self.sensor.get_z_acceleration()),
+            )
+        )
 
     def decode(array):
-        #t = InputModule.bytearray_to_uint16(array, 0)
-        t = array
+        print(array)
+        x = InputModule.bytearray_to_uint16(array, 0)
+        y = InputModule.bytearray_to_uint16(array, 2)
+        z = InputModule.bytearray_to_uint16(array, 4)
+        #t = array
         s = "\t\"StevalMKI153\":\n\t{\n"
-        s += "\t\t\"Distance\": " + str(t) + ",\n"
+        s += "\t\t\"X\": " + str(x) + ",\n"
+        s += "\t\t\"Y\": " + str(y) + ",\n"
+        s += "\t\t\"Z\": " + str(z) + ",\n"
         return s
 
     def test(self):

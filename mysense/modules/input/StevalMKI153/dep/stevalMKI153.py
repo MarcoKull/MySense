@@ -15,14 +15,10 @@ class StevalMKI153():
 
     def calculate_measurement(self, high_byte, low_byte):
         """all the calculation required: converting the high and low bits to 1 number, then getting twos complement"""
-        high_bits = bin(int(str(high_byte), 10)).lstrip('0b') #convert byte value to binary
-        low_bits = bin(int(str(low_byte), 10)).lstrip('0b')
-        combined_bits = high_bits + '' + low_bits #concatenate bit values
-        result = self.twos_complement(int(combined_bits, 2), len(combined_bits))
-        result = result * 0.003 # multiply by 0.003 for +-100g (default value)
-        result = round((result + 40) * 1000)
-        result = str(result)
-        return result
+        x = low_byte | high_byte << 8
+        x = twos_complement(x, len(bin(int(str(x), 10)).lstrip('0b')))
+        x = x * 1000 / 2047
+        return x
     
     def get_x_acceleration(self):
         if self.i2c.scan():

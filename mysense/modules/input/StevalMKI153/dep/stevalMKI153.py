@@ -33,7 +33,7 @@ class StevalMKI153():
             self.i2c.readfrom_mem_into(0x19, 0x29, buf)
             high_bits_x = int.from_bytes(buf, 'big', True)
             acceleration_x = self.calculate_measurement(high_bits_x, low_bits_x)
-            print("x axis " + str(acceleration_x))
+            #print("x axis " + str(acceleration_x))
             return acceleration_x
 
     def get_y_acceleration(self):
@@ -45,7 +45,7 @@ class StevalMKI153():
             self.i2c.readfrom_mem_into(0x19, 0x2B, buf)
             high_bits_y = int.from_bytes(buf, 'big', True)
             acceleration_y = self.calculate_measurement(high_bits_y, low_bits_y)
-            print("y axis " + str(acceleration_y))
+            #print("y axis " + str(acceleration_y))
             return acceleration_y
 
     def get_z_acceleration(self):
@@ -57,5 +57,5 @@ class StevalMKI153():
             self.i2c.readfrom_mem_into(0x19, 0x2D, buf)
             high_bits_z = int.from_bytes(buf, 'big', True)
             acceleration_z = self.calculate_measurement(high_bits_z, low_bits_z)
-            print("z axis " + str(acceleration_z))
+            #print("z axis " + str(acceleration_z))
             return acceleration_z

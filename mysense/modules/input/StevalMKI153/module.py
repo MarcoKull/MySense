@@ -42,11 +42,9 @@ class StevalMKI153(InputModule):
         )
 
     def decode(array):
-        print(array)
         x = InputModule.bytearray_to_uint16(array, 0)
         y = InputModule.bytearray_to_uint16(array, 2)
         z = InputModule.bytearray_to_uint16(array, 4)
-        #t = array
         s = "\t\"StevalMKI153\":\n\t{\n"
         s += "\t\t\"X\": " + str(x) + ",\n"
         s += "\t\t\"Y\": " + str(y) + ",\n"

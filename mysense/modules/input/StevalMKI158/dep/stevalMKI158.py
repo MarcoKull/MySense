@@ -1,7 +1,7 @@
 from machine import I2C
 import time
 
-class StevalMKI153():
+class StevalMKI158():
     def __init__(self, pins=('P9','P10'), baudrate=115200):
         self.i2c = I2C(0, I2C.MASTER, pins=pins)
         self.i2c.init(I2C.MASTER, baudrate=baudrate)
@@ -16,9 +16,10 @@ class StevalMKI153():
     def calculate_measurement(self, high_byte, low_byte):
         """all the calculation required: converting the high and low bits to 1 number, then getting twos complement"""
         x = low_byte | high_byte << 8
+        x = x >> 4
         x = self.twos_complement(x, len(bin(int(str(x), 10)).lstrip('0b')))
-        x = x * 1000 / 2047
-        x = (x + 101) * 1000
+        x = x * 6 / 2047
+        x = (x + 40) * 1000
         return x
     
     def get_x_acceleration(self):
